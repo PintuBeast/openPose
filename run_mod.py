@@ -38,7 +38,7 @@ if __name__ == '__main__':
     else:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
 
-    for i in range(1,10) 
+    for i in range(1,10): 
       # estimate human poses from a single image !
       image = common.read_imgfile(args.imagePath+'frame_'+str(i)+'.png', None, None)
       if image is None:
@@ -49,7 +49,7 @@ if __name__ == '__main__':
       humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
       elapsed = time.time() - t
 
-      logger.info('inference image: %s in %.4f seconds.' % (args.image, elapsed))
+      logger.info('inference image: %s in %.4f seconds.' % (args.image.Path, elapsed))
 
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
       cv2.imwrite('./output/frame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
