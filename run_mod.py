@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
    #video 1 split into frames
 
-    src = cv2.VideoCapture('./videos/input1.mp4')
+    src = cv2.VideoCapture('/openPose/videos/input1.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
 
     frame_num = 0
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
    #video 2 split into frames
 
-    src = cv2.VideoCapture('./videos/input2.mp4')
+    src = cv2.VideoCapture('/openPose/videos/input2.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
 
     frame_num = 0
@@ -143,9 +143,6 @@ if __name__ == '__main__':
 
     with open('data1.json', 'w') as outfile:
       json.dump(data, outfile)
-
-
-
 
 
     # processing second video
