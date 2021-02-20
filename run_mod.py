@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     for i in range(1,f1Count): 
       # estimate human poses from a single image !
-      image = common.read_imgfile(args.imagePath+'f1rame_'+str(i)+'.png', None, None)
+      image = common.read_imgfile('/openPose/f1rame_'+str(i)+'.png', None, None)
       if image is None:
           logger.error('Image can not be read, path=%s' % args.imagePath)
           sys.exit(-1)
@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     for i in range(1,f2Count): 
       # estimate human poses from a single image !
-      image = common.read_imgfile(args.imagePath+'f2rame_'+str(i)+'.png', None, None)
+      image = common.read_imgfile('/openPose/images/f2rame_'+str(i)+'.png', None, None)
       if image is None:
           logger.error('Image can not be read, path=%s' % args.imagePath)
           sys.exit(-1)
