@@ -47,53 +47,6 @@ if __name__ == '__main__':
     except OSError as error: 
       print(error)   
 
-   #video 1 split into frames
-
-    src = cv2.VideoCapture('/openPose/videos/input1.mp4')
-    fps = src.get(cv2.CAP_PROP_FPS)
-
-    frame_num = 0
-    while(frame_num< int(src.get(cv2.CAP_PROP_FRAME_COUNT))):
-      # Capture frame-by-frame
-      ret, frame = src.read()
-
-      # Saves image of the current frame in jpg file
-      name = '/openPose/images/f1rame_' + str(frame_num) + '.png'
-      print ('Creating...' + name)
-      cv2.imwrite(name, frame)
-
-      # To stop duplicate images
-      frame_num += 1
-
-      # When everything done, release the capture
-    src.release()
-    cv2.destroyAllWindows()
-
-
-
-   #video 2 split into frames
-
-    src = cv2.VideoCapture('/openPose/videos/input2.mp4')
-    fps = src.get(cv2.CAP_PROP_FPS)
-
-    frame_num = 0
-    while(frame_num< int(src.get(cv2.CAP_PROP_FRAME_COUNT))):
-      # Capture frame-by-frame
-      ret, frame = src.read()
-
-      # Saves image of the current frame in jpg file
-      name = '/openPose/images/f2rame_' + str(frame_num) + '.png'
-      print ('Creating...' + name)
-      cv2.imwrite(name, frame)
-
-      # To stop duplicate images
-      frame_num += 1
-
-      # When everything done, release the capture
-    src.release()
-    cv2.destroyAllWindows()
-
-
     f1Count = len(glob.glob1('/openPose/images',"f1rame_*.png"))
     f2Count = len(glob.glob1('/openPose/images',"f2rame_*.png"))
 
