@@ -1,0 +1,6 @@
+file '/openPose/output/output_main.mp4'
+file '/openPose/output/score.mp4'
+file '/openPose/output/best_moments.mp4'
+file '/openPose/output/best_moments1.mp4'
+file '/openPose/output/poor_moments.mp4'
+file '/openPose/output/poor_moments1.mp4'
