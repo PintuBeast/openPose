@@ -211,7 +211,7 @@ if __name__ == '__main__':
       x_offset=y_offset=0
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
       cv2.imwrite('/openPose/output/combo_'+str(i)+'.png',cv2.cvtColor(l_img, cv2.COLOR_BGR2RGB))
-    os.system('ffmpeg -i /openPose/output/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output/out_main.mp4')
+    os.system('ffmpeg -i /openPose/output/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output/output_main.mp4')
     
    
     def getScore(x):
