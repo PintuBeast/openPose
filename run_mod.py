@@ -26,6 +26,13 @@ formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+progress=0.0
+oldTime=time.time()
+newTime=time.time()
+fProgress = open("progress.txt", "w")
+fProgress.write(progress)
+fProgress.close()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
@@ -49,7 +56,7 @@ if __name__ == '__main__':
     os.system('rm -r /openPose/images')
 
     try: 
-      os.mkdir('/openPose/images') 
+      os.mkdir('./images') 
     except OSError as error: 
       print(error)   
 
@@ -103,6 +110,7 @@ if __name__ == '__main__':
     f1Count = len(glob.glob1('/openPose/images',"f1rame_*.png"))
     f2Count = len(glob.glob1('/openPose/images',"f2rame_*.png"))
 
+    fCount = f1Count if f1Count < f2Count else f2Count 
     # processing first video
     data1 = {}
     data1['parts'] = []
@@ -110,7 +118,19 @@ if __name__ == '__main__':
     data = {}
     data['frames'] = []
 
-    for i in range(0,f1Count): 
+    for i in range(0,fCount): 
+      newTime=time.time()
+      progress=80.0*float(i)/(2*fCount)
+      if newTime-oldTime>5.0:
+        oldTime=newTime
+        try:
+          fProgress = open("progress.txt", "w")
+          fProgress.write(progress)
+          fProgress.close()
+        except:
+          print("File write exception from run_mod") 
+            
+
       # estimate human poses from a single image !
       image = common.read_imgfile('/openPose/images/f1rame_'+str(i)+'.png', None, None)
       if image is None:
@@ -159,7 +179,18 @@ if __name__ == '__main__':
     data = {}
     data['frames'] = []
 
-    for i in range(0,f2Count): 
+    for i in range(0,fCount): 
+      newTime=time.time()
+      progress=40.0+80.0*float(i)/(2*fCount)
+      if newTime-oldTime>5.0:
+        oldTime=newTime
+        try:
+          fProgress = open("progress.txt", "w")
+          fProgress.write(progress)
+          fProgress.close()
+        except:
+          print("File write exception from run_mod") 
+      
       # estimate human poses from a single image !
       image = common.read_imgfile('/openPose/images/f2rame_'+str(i)+'.png', None, None)
       if image is None:
@@ -203,7 +234,7 @@ if __name__ == '__main__':
     #os.system('ffmpeg -i /openPose/output/f1rame_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p /openPose/output/out1.mp4')
     #os.system('ffmpeg -i /openPose/output/f2rame_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p /openPose/output/out2.mp4')
 
-    fCount = f1Count if f1Count < f2Count else f2Count 
+    
       
     for i in range(0,fCount):
       s_img =cv2.resize(cv2.imread('/openPose/output/f1rame_'+str(i)+'.png'),(270,480))
@@ -211,7 +242,7 @@ if __name__ == '__main__':
       x_offset=y_offset=0
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
       cv2.imwrite('/openPose/output/combo_'+str(i)+'.png',cv2.cvtColor(l_img, cv2.COLOR_BGR2RGB))
-    os.system('ffmpeg -i /openPose/output/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output/output_main.mp4')
+    os.system('ffmpeg -i /openPose/output/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output/out_main.mp4')
     
    
     def getScore(x):
@@ -601,6 +632,18 @@ if __name__ == '__main__':
       #plt.show()
       sim=0
 
+      newTime=time.time()
+      progress=90.0
+      if newTime-oldTime>5.0:
+        oldTime=newTime
+        try:
+          fProgress = open("progress.txt", "w")
+          fProgress.write(progress)
+          fProgress.close()
+        except:
+          print("File write exception from run_mod") 
+
+
       for angle in theta: 
         if math.isnan(angle) == False:
           sim=sim+getScore(angle)
@@ -636,4 +679,5 @@ if __name__ == '__main__':
     os.system('ffmpeg -loop 1 -i /openPose/output/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/best_moments1.mp4')
     os.system('ffmpeg -f concat -safe 0 -i /openPose/clipList.txt -c copy /openPose/output/output_full.mp4 -y')
     
+
 
