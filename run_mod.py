@@ -30,7 +30,7 @@ progress=0.0
 oldTime=time.time()
 newTime=time.time()
 fProgress = open("progress.txt", "w")
-fProgress.write(progress)
+fProgress.write(str(progress))
 fProgress.close()
 
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         oldTime=newTime
         try:
           fProgress = open("progress.txt", "w")
-          fProgress.write(progress)
+          fProgress.write(str(progress))
           fProgress.close()
         except:
           print("File write exception from run_mod") 
@@ -186,7 +186,7 @@ if __name__ == '__main__':
         oldTime=newTime
         try:
           fProgress = open("progress.txt", "w")
-          fProgress.write(progress)
+          fProgress.write(str(progress))
           fProgress.close()
         except:
           print("File write exception from run_mod") 
@@ -638,7 +638,7 @@ if __name__ == '__main__':
         oldTime=newTime
         try:
           fProgress = open("progress.txt", "w")
-          fProgress.write(progress)
+          fProgress.write(str(progress))
           fProgress.close()
         except:
           print("File write exception from run_mod") 
