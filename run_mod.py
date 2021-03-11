@@ -29,7 +29,7 @@ logger.addHandler(ch)
 progress=0.0
 oldTime=time.time()
 newTime=time.time()
-fProgress = open("progress.txt", "w")
+fProgress = open("/openPose/output/progress.txt", "w")
 fProgress.write(str(progress))
 fProgress.close()
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          fProgress = open("progress.txt", "w")
+          fProgress = open("/openPose/output/progress.txt", "w")
           fProgress.write(str(progress))
           print('progress is:',str(progress))
           logger.info('progress is %s' % str(progress))
@@ -187,7 +187,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          fProgress = open("progress.txt", "w")
+          fProgress = open("/openPose/output/progress.txt", "w")
           fProgress.write(str(progress))
           print('progress is:',str(progress))
           logger.info('progress is %s'% str(progress))
@@ -641,7 +641,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          fProgress = open("progress.txt", "w")
+          fProgress = open("/openPose/output/progress.txt", "w")
           fProgress.write(str(progress))
           fProgress.close()
         except:
