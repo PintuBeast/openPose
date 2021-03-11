@@ -56,7 +56,7 @@ if __name__ == '__main__':
     os.system('rm -r /openPose/images')
 
     try: 
-      os.mkdir('./images') 
+      os.mkdir('/openPose/images') 
     except OSError as error: 
       print(error)   
 
