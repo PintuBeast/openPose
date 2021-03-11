@@ -130,7 +130,7 @@ if __name__ == '__main__':
           logger.info('progress is %s' % str(progress))
           fProgress.close()
         except:
-          print("File write exception from run_mod") 
+          print("File write exception from run_mod: ",sys.exc_info()[0]) 
             
 
       # estimate human poses from a single image !
@@ -193,7 +193,7 @@ if __name__ == '__main__':
           logger.info('progress is %s'% str(progress))
           fProgress.close()
         except:
-          print("File write exception from run_mod") 
+          print("File write exception from run_mod :",sys.exc_info()[0]) 
       
       # estimate human poses from a single image !
       image = common.read_imgfile('/openPose/images/f2rame_'+str(i)+'.png', None, None)
@@ -691,7 +691,7 @@ if __name__ == '__main__':
       logger.info('progress is %s' % str(progress))
       fProgress.close()
     except:
-      print("File write exception from run_mod") 
+      print("File write exception from run_mod: ",sys.exc_info()[0]) 
      
 
 
