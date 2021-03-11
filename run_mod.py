@@ -126,6 +126,7 @@ if __name__ == '__main__':
         try:
           fProgress = open("progress.txt", "w")
           fProgress.write(str(progress))
+          print('progress is:',str(progress))
           fProgress.close()
         except:
           print("File write exception from run_mod") 
@@ -187,6 +188,7 @@ if __name__ == '__main__':
         try:
           fProgress = open("progress.txt", "w")
           fProgress.write(str(progress))
+          print('progress is:',str(progress))
           fProgress.close()
         except:
           print("File write exception from run_mod") 
