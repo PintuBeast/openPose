@@ -683,5 +683,15 @@ if __name__ == '__main__':
     os.system('ffmpeg -loop 1 -i /openPose/output/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/best_moments1.mp4')
     os.system('ffmpeg -f concat -safe 0 -i /openPose/clipList.txt -c copy /openPose/output/output_full.mp4 -y')
     
+    progress=100.0
+     try:
+          fProgress = open("/openPose/output/progress.txt", "w")
+          fProgress.write(str(progress))
+          print('progress is:',str(progress))
+          logger.info('progress is %s' % str(progress))
+          fProgress.close()
+        except:
+          print("File write exception from run_mod") 
+    
 
 
