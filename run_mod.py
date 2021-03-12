@@ -38,7 +38,8 @@ logger.addHandler(ch)
 progress=0.0
 oldTime=time.time()
 newTime=time.time()
-
+oldProgress=progress
+newProgress=progress
 
 
 if __name__ == '__main__':
@@ -130,8 +131,9 @@ if __name__ == '__main__':
     for i in range(0,fCount): 
       newTime=time.time()
       progress=80.0*float(i)/(2*fCount)
-      if newTime-oldTime>5.0:
-        oldTime=newTime
+      newProgress=progress  
+      if newProgress-oldProgress>5.0:
+        oldProgress=newProgress
         try:
           ref.child(args.userID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
@@ -192,8 +194,9 @@ if __name__ == '__main__':
     for i in range(0,fCount): 
       newTime=time.time()
       progress=40.0+80.0*float(i)/(2*fCount)
-      if newTime-oldTime>5.0:
-        oldTime=newTime
+      newProgress=progress  
+      if newProgress-oldProgress>5.0:
+        oldProgress=newProgress
         try:
           ref.child(args.userID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
