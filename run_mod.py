@@ -38,9 +38,7 @@ logger.addHandler(ch)
 progress=0.0
 oldTime=time.time()
 newTime=time.time()
-fProgress = open("/openPose/output/progress.txt", "w")
-fProgress.write(str(progress))
-fProgress.close()
+
 
 
 if __name__ == '__main__':
