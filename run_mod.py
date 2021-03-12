@@ -45,7 +45,7 @@ fProgress.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
-    parser.add_argument('--username', type=str, default='none')
+    parser.add_argument('--userID', type=str, default='none')
     parser.add_argument('--imagePath', type=str, default='./images/')
     parser.add_argument('--model', type=str, default='cmu',
                         help='cmu / mobilenet_thin / mobilenet_v2_large / mobilenet_v2_small')
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    ref.child(args.username).set({'object':{'progress':0}})
+    ref.child(args.userID).set({'object':{'progress':0}})
     w, h = model_wh(args.resize)
     if w == 0 or h == 0:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(432, 368))
@@ -135,7 +135,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          ref.child(args.username).set({'object':{'progress':progress}})
+          ref.child(args.userID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
           logger.info('progress is %s' % str(progress))
           
@@ -197,7 +197,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          ref.child(args.username).set({'object':{'progress':progress}})
+          ref.child(args.userID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
           logger.info('progress is %s'% str(progress))
         except:
@@ -649,7 +649,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          ref.child(args.username).set({'object':{'progress':progress}})
+          ref.child(args.userID).set({'object':{'progress':progress}})
         except:
           print("File write exception from run_mod") 
 
@@ -691,7 +691,7 @@ if __name__ == '__main__':
     
     progress=100.0
     try:
-      ref.child(args.username).set({'object':{'progress':progress}})
+      ref.child(args.userID).set({'object':{'progress':progress}})
       print('progress is:',str(progress))
       logger.info('progress is %s' % str(progress))
     except:
