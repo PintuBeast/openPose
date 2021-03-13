@@ -16,11 +16,12 @@ from numpy import dot
 from numpy.linalg import norm
 import matplotlib.pyplot as plt
 import firebase_admin
-from firebase_admin import credentials,db
+from firebase_admin import credentials,db,firestore, storage
 
 cred=credentials.Certificate('/app/firebasecredential.json')
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://demoplayer-ecc96.firebaseio.com'
+    'databaseURL': 'https://demoplayer-ecc96.firebaseio.com',
+    'storageBucket': 'demoplayer-ecc96.appspot.com'
 })
 
 ref = db.reference('progress')
@@ -697,6 +698,14 @@ if __name__ == '__main__':
       logger.info('progress is %s' % str(progress))
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
-     
-
-
+    videoName='Video-'+postID+'.mp4' 
+    bucket = storage.bucket()
+    blob = bucket.blob('ComparisonVideos/'+videoName)
+    outfile='/app/output_full.mp4'
+    with open(outfile, 'rb') as my_file:
+      blob.upload_from_file(my_file)
+    db = firestore.client()
+    result=db.collection('copy_objects').document('1eNfmDW05yOZNdGTB7hx').update({'comparison_video_url':blob.public_url,'score':netSim})
+    print(result)
+    logger.info('upload and update result  is %s' % str(result))
+    
