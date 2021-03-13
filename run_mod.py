@@ -45,6 +45,7 @@ newProgress=progress
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
+    parser.add_argument('--postID', type=str, default='none')
     parser.add_argument('--userID', type=str, default='none')
     parser.add_argument('--imagePath', type=str, default='./images/')
     parser.add_argument('--model', type=str, default='cmu',
@@ -698,7 +699,8 @@ if __name__ == '__main__':
       logger.info('progress is %s' % str(progress))
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
-    videoName='Video-'+postID+'.mp4' 
+    #file upload and firestore update
+    videoName='Video-'+args.postID+'.mp4' 
     bucket = storage.bucket()
     blob = bucket.blob('ComparisonVideos/'+videoName)
     outfile='/app/output_full.mp4'
