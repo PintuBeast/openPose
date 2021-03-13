@@ -703,7 +703,7 @@ if __name__ == '__main__':
     videoName='Video-'+args.postID+'.mp4' 
     bucket = storage.bucket()
     blob = bucket.blob('ComparisonVideos/'+videoName)
-    outfile='/app/output_full.mp4'
+    outfile='/openPose/output/output_full.mp4'
     with open(outfile, 'rb') as my_file:
       blob.upload_from_file(my_file)
     db = firestore.client()
