@@ -692,13 +692,6 @@ if __name__ == '__main__':
     os.system('ffmpeg -loop 1 -i /openPose/output/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/best_moments1.mp4')
     os.system('ffmpeg -f concat -safe 0 -i /openPose/clipList.txt -c copy /openPose/output/output_full.mp4 -y')
     
-    progress=100.0
-    try:
-      ref.child(args.userID).set({'object':{'progress':progress}})
-      print('progress is:',str(progress))
-      logger.info('progress is %s' % str(progress))
-    except:
-      print("File write exception from run_mod: ",sys.exc_info()[0]) 
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
     bucket = storage.bucket()
@@ -710,4 +703,12 @@ if __name__ == '__main__':
     result=db.collection('copy_objects').document('1eNfmDW05yOZNdGTB7hx').update({'comparison_video_url':blob.public_url,'score':netSim})
     print(result)
     logger.info('upload and update result  is %s' % str(result))
+    
+     progress=100.0
+    try:
+      ref.child(args.userID).set({'object':{'progress':progress}})
+      print('progress is:',str(progress))
+      logger.info('progress is %s' % str(progress))
+    except:
+      print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
