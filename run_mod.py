@@ -704,7 +704,7 @@ if __name__ == '__main__':
     print(result)
     logger.info('upload and update result  is %s' % str(result))
     
-     progress=100.0
+    progress=100.0
     try:
       ref.child(args.userID).set({'object':{'progress':progress}})
       print('progress is:',str(progress))
