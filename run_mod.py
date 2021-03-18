@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    ref.child(args.userID).set({'object':{'progress':0}})
+    ref.child(args.postID).set({'object':{'progress':0}})
     w, h = model_wh(args.resize)
     if w == 0 or h == 0:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(432, 368))
@@ -137,7 +137,7 @@ if __name__ == '__main__':
       if newProgress-oldProgress>5.0:
         oldProgress=newProgress
         try:
-          ref.child(args.userID).set({'object':{'progress':progress}})
+          ref.child(args.postID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
           logger.info('progress is %s' % str(progress))
           
@@ -200,7 +200,7 @@ if __name__ == '__main__':
       if newProgress-oldProgress>5.0:
         oldProgress=newProgress
         try:
-          ref.child(args.userID).set({'object':{'progress':progress}})
+          ref.child(args.postID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
           logger.info('progress is %s'% str(progress))
         except:
@@ -652,7 +652,7 @@ if __name__ == '__main__':
       if newTime-oldTime>5.0:
         oldTime=newTime
         try:
-          ref.child(args.userID).set({'object':{'progress':progress}})
+          ref.child(args.postID).set({'object':{'progress':progress}})
         except:
           print("File write exception from run_mod") 
 
@@ -706,7 +706,7 @@ if __name__ == '__main__':
     
     progress=100.0
     try:
-      ref.child(args.userID).set({'object':{'progress':progress}})
+      ref.child(args.postID).set({'object':{'progress':progress}})
       print('progress is:',str(progress))
       logger.info('progress is %s' % str(progress))
     except:
