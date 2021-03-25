@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
       # Saves image of the current frame in jpg file
       name = '/openPose/images/f1rame_' + str(frame_num) + '.png'
-      print ('Creating...' + name)
+      #print ('Creating...' + name)
       cv2.imwrite(name, frame)
 
       # To stop duplicate images
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
       # Saves image of the current frame in jpg file
       name = '/openPose/images/f2rame_' + str(frame_num) + '.png'
-      print ('Creating...' + name)
+      #print ('Creating...' + name)
       cv2.imwrite(name, frame)
 
       # To stop duplicate images
