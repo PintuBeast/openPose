@@ -65,14 +65,14 @@ if __name__ == '__main__':
     else:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     
-    os.system('rm -r /openPose/images')
+    os.system('rm -r /openPose/images/*')
 
     try: 
       os.mkdir('/openPose/images') 
     except OSError as error: 
       print(error)   
 
-    os.system('rm -r /openPose/output')
+    os.system('rm -r /openPose/output/*')
 
     try: 
       os.mkdir('/openPose/output') 
@@ -179,7 +179,7 @@ if __name__ == '__main__':
                 })
             break    
 
-      #logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
+      logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
       cv2.imwrite('/openPose/output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
