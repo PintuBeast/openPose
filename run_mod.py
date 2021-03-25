@@ -707,7 +707,7 @@ if __name__ == '__main__':
     with open(outfile, 'rb') as my_file:
       blob.upload_from_file(my_file)
     db = firestore.client()
-    result=db.collection('copy_objects').document('1eNfmDW05yOZNdGTB7hx').update({'comparison_video_url':blob.public_url,'score':netSim})
+    result=db.collection('copy_objects').document(postID).update({'score':netSim})
    # print(result)
    # logger.info('upload and update result  is %s' % str(result))
     
