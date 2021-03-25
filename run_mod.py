@@ -146,7 +146,7 @@ if __name__ == '__main__':
         try:
           ref.child(args.postID).set({'object':{'progress':progress}})
           print('progress is:',str(progress))
-          logger.info('progress is %s' % str(progress))
+        #  logger.info('progress is %s' % str(progress))
           
         except:
           print("File write exception from run_mod: ",sys.exc_info()[0]) 
@@ -179,8 +179,8 @@ if __name__ == '__main__':
                 })
             break    
 
-      logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
-
+      #logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
+      #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
       cv2.imwrite('/openPose/output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
@@ -208,7 +208,7 @@ if __name__ == '__main__':
         oldProgress=newProgress
         try:
           ref.child(args.postID).set({'object':{'progress':progress}})
-          print('progress is:',str(progress))
+        #  print('progress is:',str(progress))
           logger.info('progress is %s'% str(progress))
         except:
           print("File write exception from run_mod :",sys.exc_info()[0]) 
@@ -240,7 +240,7 @@ if __name__ == '__main__':
                 })
             break    
 
-      logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
+      #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
 
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
       cv2.imwrite('/openPose/output/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -276,33 +276,33 @@ if __name__ == '__main__':
         return 0
 
 
-    xline1_2=np.zeros((2,))
-    xline1_5=np.zeros((2,))
-    xline2_3=np.zeros((2,))
-    xline3_4=np.zeros((2,))
-    xline5_6=np.zeros((2,))
-    xline6_7=np.zeros((2,))
-    xline1_11=np.zeros((2,))
-    xline1_8=np.zeros((2,))
-    xline11_12=np.zeros((2,))
-    xline12_13=np.zeros((2,))
-    xline8_9=np.zeros((2,))
-    xline9_10=np.zeros((2,))
-    xline0_1=np.zeros((2,))
+#     xline1_2=np.zeros((2,))
+#     xline1_5=np.zeros((2,))
+#     xline2_3=np.zeros((2,))
+#     xline3_4=np.zeros((2,))
+#     xline5_6=np.zeros((2,))
+#     xline6_7=np.zeros((2,))
+#     xline1_11=np.zeros((2,))
+#     xline1_8=np.zeros((2,))
+#     xline11_12=np.zeros((2,))
+#     xline12_13=np.zeros((2,))
+#     xline8_9=np.zeros((2,))
+#     xline9_10=np.zeros((2,))
+#     xline0_1=np.zeros((2,))
 
-    yline1_2=np.zeros((2,))
-    yline1_5=np.zeros((2,))
-    yline2_3=np.zeros((2,))
-    yline3_4=np.zeros((2,))
-    yline5_6=np.zeros((2,))
-    yline6_7=np.zeros((2,))
-    yline1_11=np.zeros((2,))
-    yline1_8=np.zeros((2,))
-    yline11_12=np.zeros((2,))
-    yline12_13=np.zeros((2,))
-    yline8_9=np.zeros((2,))
-    yline9_10=np.zeros((2,))
-    yline0_1=np.zeros((2,))
+#     yline1_2=np.zeros((2,))
+#     yline1_5=np.zeros((2,))
+#     yline2_3=np.zeros((2,))
+#     yline3_4=np.zeros((2,))
+#     yline5_6=np.zeros((2,))
+#     yline6_7=np.zeros((2,))
+#     yline1_11=np.zeros((2,))
+#     yline1_8=np.zeros((2,))
+#     yline11_12=np.zeros((2,))
+#     yline12_13=np.zeros((2,))
+#     yline8_9=np.zeros((2,))
+#     yline9_10=np.zeros((2,))
+#     yline0_1=np.zeros((2,))
 
     v1line1_2=np.zeros((2,))
     v1line1_5=np.zeros((2,))
@@ -672,9 +672,9 @@ if __name__ == '__main__':
       simArr[i]=sim
       netSim=netSim+sim
       print('Score is ',sim)
-      plt.savefig('/openPose/output/output_'+str(i)+'.png')
+    #  plt.savefig('/openPose/output/output_'+str(i)+'.png')
 
-      plt.cla()
+    #  plt.cla()
     netSim=netSim/minFrames  
     maxSim=np.argmax(simArr)
     minSim=np.argmin(simArr) 
@@ -708,8 +708,8 @@ if __name__ == '__main__':
       blob.upload_from_file(my_file)
     db = firestore.client()
     result=db.collection('copy_objects').document('1eNfmDW05yOZNdGTB7hx').update({'comparison_video_url':blob.public_url,'score':netSim})
-    print(result)
-    logger.info('upload and update result  is %s' % str(result))
+   # print(result)
+   # logger.info('upload and update result  is %s' % str(result))
     
     progress=100.0
     try:
