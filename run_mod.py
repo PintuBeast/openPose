@@ -72,6 +72,13 @@ if __name__ == '__main__':
     except OSError as error: 
       print(error)   
 
+    os.system('rm -r /openPose/output')
+
+    try: 
+      os.mkdir('/openPose/output') 
+    except OSError as error: 
+      print(error) 
+    
    #video 1 split into frames
 
     src = cv2.VideoCapture('/app/input1.mp4')
@@ -381,235 +388,235 @@ if __name__ == '__main__':
     #print(x1Array)
     
     for i in range(0,minFrames):
-      xline1_2[0]=x1Array[1][i]
-      xline1_2[1]=x1Array[2][i]
-      yline1_2[0]=-1*y1Array[1][i]
-      yline1_2[1]=-1*y1Array[2][i]
+#       xline1_2[0]=x1Array[1][i]
+#       xline1_2[1]=x1Array[2][i]
+#       yline1_2[0]=-1*y1Array[1][i]
+#       yline1_2[1]=-1*y1Array[2][i]
       v1line1_2[0]=x1Array[2][i]-x1Array[1][i]
       v1line1_2[1]=y1Array[2][i]-y1Array[1][i]
 
 
-      xline1_5[0]=x1Array[1][i]
-      xline1_5[1]=x1Array[5][i]
-      yline1_5[0]=-1*y1Array[1][i]
-      yline1_5[1]=-1*y1Array[5][i]
+#       xline1_5[0]=x1Array[1][i]
+#       xline1_5[1]=x1Array[5][i]
+#       yline1_5[0]=-1*y1Array[1][i]
+#       yline1_5[1]=-1*y1Array[5][i]
       v1line1_5[0]=x1Array[5][i]-x1Array[1][i]
       v1line1_5[1]=y1Array[5][i]-y1Array[1][i]
 
 
 
-      xline2_3[0]=x1Array[2][i]
-      xline2_3[1]=x1Array[3][i]
-      yline2_3[0]=-1*y1Array[2][i]
-      yline2_3[1]=-1*y1Array[3][i]
+#       xline2_3[0]=x1Array[2][i]
+#       xline2_3[1]=x1Array[3][i]
+#       yline2_3[0]=-1*y1Array[2][i]
+#       yline2_3[1]=-1*y1Array[3][i]
       v1line2_3[0]=x1Array[3][i]-x1Array[2][i]
       v1line2_3[1]=y1Array[3][i]-y1Array[2][i]
 
 
-      xline3_4[0]=x1Array[3][i]
-      xline3_4[1]=x1Array[4][i]
-      yline3_4[0]=-1*y1Array[3][i]
-      yline3_4[1]=-1*y1Array[4][i]
+#       xline3_4[0]=x1Array[3][i]
+#       xline3_4[1]=x1Array[4][i]
+#       yline3_4[0]=-1*y1Array[3][i]
+#       yline3_4[1]=-1*y1Array[4][i]
       v1line3_4[0]=x1Array[4][i]-x1Array[3][i]
       v1line3_4[1]=y1Array[4][i]-y1Array[3][i]
 
 
-      xline5_6[0]=x1Array[5][i]
-      xline5_6[1]=x1Array[6][i]
-      yline5_6[0]=-1*y1Array[5][i]
-      yline5_6[1]=-1*y1Array[6][i]
+#       xline5_6[0]=x1Array[5][i]
+#       xline5_6[1]=x1Array[6][i]
+#       yline5_6[0]=-1*y1Array[5][i]
+#       yline5_6[1]=-1*y1Array[6][i]
       v1line5_6[0]=x1Array[6][i]-x1Array[5][i]
       v1line5_6[1]=y1Array[6][i]-y1Array[5][i]
 
-      xline6_7[0]=x1Array[6][i]
-      xline6_7[1]=x1Array[7][i]
-      yline6_7[0]=-1*y1Array[6][i]
-      yline6_7[1]=-1*y1Array[7][i]
+#       xline6_7[0]=x1Array[6][i]
+#       xline6_7[1]=x1Array[7][i]
+#       yline6_7[0]=-1*y1Array[6][i]
+#       yline6_7[1]=-1*y1Array[7][i]
       v1line6_7[0]=x1Array[7][i]-x1Array[6][i]
       v1line6_7[1]=y1Array[7][i]-y1Array[6][i]
 
 
-      xline1_11[0]=x1Array[1][i]
-      xline1_11[1]=x1Array[11][i]
-      yline1_11[0]=-1*y1Array[1][i]
-      yline1_11[1]=-1*y1Array[11][i]
+#       xline1_11[0]=x1Array[1][i]
+#       xline1_11[1]=x1Array[11][i]
+#       yline1_11[0]=-1*y1Array[1][i]
+#       yline1_11[1]=-1*y1Array[11][i]
       v1line1_11[0]=x1Array[11][i]-x1Array[1][i]
       v1line1_11[1]=y1Array[11][i]-y1Array[1][i]
 
 
-      xline1_8[0]=x1Array[1][i]
-      xline1_8[1]=x1Array[8][i]
-      yline1_8[0]=-1*y1Array[1][i]
-      yline1_8[1]=-1*y1Array[8][i]
+#       xline1_8[0]=x1Array[1][i]
+#       xline1_8[1]=x1Array[8][i]
+#       yline1_8[0]=-1*y1Array[1][i]
+#       yline1_8[1]=-1*y1Array[8][i]
       v1line1_8[0]=x1Array[8][i]-x1Array[1][i]
       v1line1_8[1]=y1Array[8][i]-y1Array[1][i]
 
 
-      xline11_12[0]=x1Array[11][i]
-      xline11_12[1]=x1Array[12][i]
-      yline11_12[0]=-1*y1Array[11][i]
-      yline11_12[1]=-1*y1Array[12][i]
+#       xline11_12[0]=x1Array[11][i]
+#       xline11_12[1]=x1Array[12][i]
+#       yline11_12[0]=-1*y1Array[11][i]
+#       yline11_12[1]=-1*y1Array[12][i]
       v1line11_12[0]=x1Array[12][i]-x1Array[11][i]
       v1line11_12[1]=y1Array[12][i]-y1Array[11][i]
 
 
-      xline12_13[0]=x1Array[12][i]
-      xline12_13[1]=x1Array[13][i]
-      yline12_13[0]=-1*y1Array[12][i]
-      yline12_13[1]=-1*y1Array[13][i]
+#       xline12_13[0]=x1Array[12][i]
+#       xline12_13[1]=x1Array[13][i]
+#       yline12_13[0]=-1*y1Array[12][i]
+#       yline12_13[1]=-1*y1Array[13][i]
       v1line12_13[0]=x1Array[13][i]-x1Array[12][i]
       v1line12_13[1]=y1Array[13][i]-y1Array[12][i]
 
-      xline8_9[0]=x1Array[8][i]
-      xline8_9[1]=x1Array[9][i]
-      yline8_9[0]=-1*y1Array[8][i]
-      yline8_9[1]=-1*y1Array[9][i]
+#       xline8_9[0]=x1Array[8][i]
+#       xline8_9[1]=x1Array[9][i]
+#       yline8_9[0]=-1*y1Array[8][i]
+#       yline8_9[1]=-1*y1Array[9][i]
       v1line8_9[0]=x1Array[9][i]-x1Array[8][i]
       v1line8_9[1]=y1Array[9][i]-y1Array[8][i]
 
-      xline9_10[0]=x1Array[9][i]
-      xline9_10[1]=x1Array[10][i]
-      yline9_10[0]=-1*y1Array[9][i]
-      yline9_10[1]=-1*y1Array[10][i]
+#       xline9_10[0]=x1Array[9][i]
+#       xline9_10[1]=x1Array[10][i]
+#       yline9_10[0]=-1*y1Array[9][i]
+#       yline9_10[1]=-1*y1Array[10][i]
       v1line9_10[0]=x1Array[10][i]-x1Array[9][i]
       v1line9_10[1]=y1Array[10][i]-y1Array[9][i]
 
-      xline0_1[0]=x1Array[0][i]
-      xline0_1[1]=x1Array[1][i]
-      yline0_1[0]=-1*y1Array[0][i]
-      yline0_1[1]=-1*y1Array[1][i]
+#       xline0_1[0]=x1Array[0][i]
+#       xline0_1[1]=x1Array[1][i]
+#       yline0_1[0]=-1*y1Array[0][i]
+#       yline0_1[1]=-1*y1Array[1][i]
       v1line0_1[0]=x1Array[1][i]-x1Array[0][i]
       v1line0_1[1]=y1Array[1][i]-y1Array[0][i]
 
 
 
-      plt.plot(xline1_2,yline1_2,color='red')
-      plt.plot(xline1_5,yline1_5,color='red')
-      plt.plot(xline2_3,yline2_3,color='red')
-      plt.plot(xline3_4,yline3_4,color='red')
-      plt.plot(xline5_6,yline5_6,color='red')
-      plt.plot(xline6_7,yline6_7,color='red')
-      plt.plot(xline1_11,yline1_11,color='red')
-      plt.plot(xline1_8,yline1_8,color='red')
-      plt.plot(xline11_12,yline11_12,color='red')
-      plt.plot(xline12_13,yline12_13,color='red')
-      plt.plot(xline8_9,yline8_9,color='red')
-      plt.plot(xline9_10,yline9_10,color='red')
-      plt.plot(xline0_1,yline0_1,color='red')
+#       plt.plot(xline1_2,yline1_2,color='red')
+#       plt.plot(xline1_5,yline1_5,color='red')
+#       plt.plot(xline2_3,yline2_3,color='red')
+#       plt.plot(xline3_4,yline3_4,color='red')
+#       plt.plot(xline5_6,yline5_6,color='red')
+#       plt.plot(xline6_7,yline6_7,color='red')
+#       plt.plot(xline1_11,yline1_11,color='red')
+#       plt.plot(xline1_8,yline1_8,color='red')
+#       plt.plot(xline11_12,yline11_12,color='red')
+#       plt.plot(xline12_13,yline12_13,color='red')
+#       plt.plot(xline8_9,yline8_9,color='red')
+#       plt.plot(xline9_10,yline9_10,color='red')
+#       plt.plot(xline0_1,yline0_1,color='red')
 
-      xline1_2[0]=x2Array[1][i]
-      xline1_2[1]=x2Array[2][i]
-      yline1_2[0]=-1*y2Array[1][i]
-      yline1_2[1]=-1*y2Array[2][i]
+#       xline1_2[0]=x2Array[1][i]
+#       xline1_2[1]=x2Array[2][i]
+#       yline1_2[0]=-1*y2Array[1][i]
+#       yline1_2[1]=-1*y2Array[2][i]
       v2line1_2[0]=x2Array[2][i]-x2Array[1][i]
       v2line1_2[1]=y2Array[2][i]-y2Array[1][i]
 
-      xline1_5[0]=x2Array[1][i]
-      xline1_5[1]=x2Array[5][i]
-      yline1_5[0]=-1*y2Array[1][i]
-      yline1_5[1]=-1*y2Array[5][i]
+#       xline1_5[0]=x2Array[1][i]
+#       xline1_5[1]=x2Array[5][i]
+#       yline1_5[0]=-1*y2Array[1][i]
+#       yline1_5[1]=-1*y2Array[5][i]
       v2line1_5[0]=x2Array[5][i]-x2Array[1][i]
       v2line1_5[1]=y2Array[5][i]-y2Array[1][i]
 
 
-      xline2_3[0]=x2Array[2][i]
-      xline2_3[1]=x2Array[3][i]
-      yline2_3[0]=-1*y2Array[2][i]
-      yline2_3[1]=-1*y2Array[3][i]
+#       xline2_3[0]=x2Array[2][i]
+#       xline2_3[1]=x2Array[3][i]
+#       yline2_3[0]=-1*y2Array[2][i]
+#       yline2_3[1]=-1*y2Array[3][i]
       v2line2_3[0]=x2Array[3][i]-x2Array[2][i]
       v2line2_3[1]=y2Array[3][i]-y2Array[2][i]
 
-      xline3_4[0]=x2Array[3][i]
-      xline3_4[1]=x2Array[4][i]
-      yline3_4[0]=-1*y2Array[3][i]
-      yline3_4[1]=-1*y2Array[4][i]
+#       xline3_4[0]=x2Array[3][i]
+#       xline3_4[1]=x2Array[4][i]
+#       yline3_4[0]=-1*y2Array[3][i]
+#       yline3_4[1]=-1*y2Array[4][i]
       v2line3_4[0]=x2Array[4][i]-x2Array[3][i]
       v2line3_4[1]=y2Array[4][i]-y2Array[3][i]
 
 
-      xline5_6[0]=x2Array[5][i]
-      xline5_6[1]=x2Array[6][i]
-      yline5_6[0]=-1*y2Array[5][i]
-      yline5_6[1]=-1*y2Array[6][i]
+#       xline5_6[0]=x2Array[5][i]
+#       xline5_6[1]=x2Array[6][i]
+#       yline5_6[0]=-1*y2Array[5][i]
+#       yline5_6[1]=-1*y2Array[6][i]
       v2line5_6[0]=x2Array[6][i]-x2Array[5][i]
       v2line5_6[1]=y2Array[6][i]-y2Array[5][i]
 
 
-      xline6_7[0]=x2Array[6][i]
-      xline6_7[1]=x2Array[7][i]
-      yline6_7[0]=-1*y2Array[6][i]
-      yline6_7[1]=-1*y2Array[7][i]
+#       xline6_7[0]=x2Array[6][i]
+#       xline6_7[1]=x2Array[7][i]
+#       yline6_7[0]=-1*y2Array[6][i]
+#       yline6_7[1]=-1*y2Array[7][i]
       v2line6_7[0]=x2Array[7][i]-x2Array[6][i]
       v2line6_7[1]=y2Array[7][i]-y2Array[6][i]
 
 
-      xline1_11[0]=x2Array[1][i]
-      xline1_11[1]=x2Array[11][i]
-      yline1_11[0]=-1*y2Array[1][i]
-      yline1_11[1]=-1*y2Array[11][i]
+#       xline1_11[0]=x2Array[1][i]
+#       xline1_11[1]=x2Array[11][i]
+#       yline1_11[0]=-1*y2Array[1][i]
+#       yline1_11[1]=-1*y2Array[11][i]
       v2line1_11[0]=x2Array[11][i]-x2Array[1][i]
       v2line1_11[1]=y2Array[11][i]-y2Array[1][i]
 
 
-      xline1_8[0]=x2Array[1][i]
-      xline1_8[1]=x2Array[8][i]
-      yline1_8[0]=-1*y2Array[1][i]
-      yline1_8[1]=-1*y2Array[8][i]
+#       xline1_8[0]=x2Array[1][i]
+#       xline1_8[1]=x2Array[8][i]
+#       yline1_8[0]=-1*y2Array[1][i]
+#       yline1_8[1]=-1*y2Array[8][i]
       v2line1_8[0]=x2Array[8][i]-x2Array[1][i]
       v2line1_8[1]=y2Array[8][i]-y2Array[1][i]
 
 
-      xline11_12[0]=x2Array[11][i]
-      xline11_12[1]=x2Array[12][i]
-      yline11_12[0]=-1*y2Array[11][i]
-      yline11_12[1]=-1*y2Array[12][i]
+#       xline11_12[0]=x2Array[11][i]
+#       xline11_12[1]=x2Array[12][i]
+#       yline11_12[0]=-1*y2Array[11][i]
+#       yline11_12[1]=-1*y2Array[12][i]
       v2line11_12[0]=x2Array[12][i]-x2Array[11][i]
       v2line11_12[1]=y2Array[12][i]-y2Array[11][i]
 
-      xline12_13[0]=x2Array[12][i]
-      xline12_13[1]=x2Array[13][i]
-      yline12_13[0]=-1*y2Array[12][i]
-      yline12_13[1]=-1*y2Array[13][i]
+#       xline12_13[0]=x2Array[12][i]
+#       xline12_13[1]=x2Array[13][i]
+#       yline12_13[0]=-1*y2Array[12][i]
+#       yline12_13[1]=-1*y2Array[13][i]
       v2line12_13[0]=x2Array[13][i]-x2Array[12][i]
       v2line12_13[1]=y2Array[13][i]-y2Array[12][i]
 
-      xline8_9[0]=x2Array[8][i]
-      xline8_9[1]=x2Array[9][i]
-      yline8_9[0]=-1*y2Array[8][i]
-      yline8_9[1]=-1*y2Array[9][i]
+#       xline8_9[0]=x2Array[8][i]
+#       xline8_9[1]=x2Array[9][i]
+#       yline8_9[0]=-1*y2Array[8][i]
+#       yline8_9[1]=-1*y2Array[9][i]
       v2line8_9[0]=x2Array[9][i]-x2Array[8][i]
       v2line8_9[1]=y2Array[9][i]-y2Array[8][i]
 
-      xline9_10[0]=x2Array[9][i]
-      xline9_10[1]=x2Array[10][i]
-      yline9_10[0]=-1*y2Array[9][i]
-      yline9_10[1]=-1*y2Array[10][i]
+#       xline9_10[0]=x2Array[9][i]
+#       xline9_10[1]=x2Array[10][i]
+#       yline9_10[0]=-1*y2Array[9][i]
+#       yline9_10[1]=-1*y2Array[10][i]
       v2line9_10[0]=x2Array[10][i]-x2Array[9][i]
       v2line9_10[1]=y2Array[10][i]-y2Array[9][i]
 
-      xline0_1[0]=x2Array[0][i]
-      xline0_1[1]=x2Array[1][i]
-      yline0_1[0]=-1*y2Array[0][i]
-      yline0_1[1]=-1*y2Array[1][i]
+#       xline0_1[0]=x2Array[0][i]
+#       xline0_1[1]=x2Array[1][i]
+#       yline0_1[0]=-1*y2Array[0][i]
+#       yline0_1[1]=-1*y2Array[1][i]
       v2line0_1[0]=x2Array[1][i]-x2Array[0][i]
       v2line0_1[1]=y2Array[1][i]-y2Array[0][i]
 
 
       #print(x1Array[1][i])
 
-      plt.plot(xline1_2,yline1_2,color='black')
-      plt.plot(xline1_5,yline1_5,color='black')
-      plt.plot(xline2_3,yline2_3,color='black')
-      plt.plot(xline3_4,yline3_4,color='black')
-      plt.plot(xline5_6,yline5_6,color='black')
-      plt.plot(xline6_7,yline6_7,color='black')
-      plt.plot(xline1_11,yline1_11,color='black')
-      plt.plot(xline1_8,yline1_8,color='black')
-      plt.plot(xline11_12,yline11_12,color='black')
-      plt.plot(xline12_13,yline12_13,color='black')
-      plt.plot(xline8_9,yline8_9,color='black')
-      plt.plot(xline9_10,yline9_10,color='black')
-      plt.plot(xline0_1,yline0_1,color='black')
+#       plt.plot(xline1_2,yline1_2,color='black')
+#       plt.plot(xline1_5,yline1_5,color='black')
+#       plt.plot(xline2_3,yline2_3,color='black')
+#       plt.plot(xline3_4,yline3_4,color='black')
+#       plt.plot(xline5_6,yline5_6,color='black')
+#       plt.plot(xline6_7,yline6_7,color='black')
+#       plt.plot(xline1_11,yline1_11,color='black')
+#       plt.plot(xline1_8,yline1_8,color='black')
+#       plt.plot(xline11_12,yline11_12,color='black')
+#       plt.plot(xline12_13,yline12_13,color='black')
+#       plt.plot(xline8_9,yline8_9,color='black')
+#       plt.plot(xline9_10,yline9_10,color='black')
+#       plt.plot(xline0_1,yline0_1,color='black')
 
       try:
         theta[0]=180.0/3.14*math.acos( dot(v1line0_1, v2line0_1)/(norm(v1line0_1)*norm(v2line0_1)))
@@ -628,19 +635,19 @@ if __name__ == '__main__':
         #print('line23  ',theta )
 
       
-        plt.text(xline0_1[0],yline0_1[0], int(theta[0]), size=15, color='purple')
-        plt.text(xline1_2[0]-0.03,yline1_2[0], int(theta[1]), size=15, color='purple')
-        plt.text(xline1_5[0]+0.03,yline1_5[0], int(theta[2]), size=15, color='purple')
-        plt.text(xline2_3[0],yline2_3[0], int(theta[3]), size=15, color='purple')
-        plt.text(xline5_6[0],yline5_6[0], int(theta[4]), size=15, color='purple')
-        plt.text(xline3_4[0],yline3_4[0], int(theta[5]), size=15, color='purple')
-        plt.text(xline6_7[0],yline6_7[0], int(theta[6]), size=15, color='purple')
-        plt.text(xline1_8[0],yline1_8[0]+0.03, int(theta[7]), size=15, color='purple')
-        plt.text(xline1_11[0],yline1_11[0]-0.03, int(theta[8]), size=15, color='purple')
-        plt.text(xline8_9[0],yline8_9[0], int(theta[9]), size=15, color='purple')
-        plt.text(xline11_12[0],yline11_12[0], int(theta[10]), size=15, color='purple')
-        plt.text(xline9_10[0],yline9_10[0], int(theta[11]), size=15, color='purple')
-        plt.text(xline12_13[0],yline12_13[0], int(theta[12]), size=15, color='purple')
+#         plt.text(xline0_1[0],yline0_1[0], int(theta[0]), size=15, color='purple')
+#         plt.text(xline1_2[0]-0.03,yline1_2[0], int(theta[1]), size=15, color='purple')
+#         plt.text(xline1_5[0]+0.03,yline1_5[0], int(theta[2]), size=15, color='purple')
+#         plt.text(xline2_3[0],yline2_3[0], int(theta[3]), size=15, color='purple')
+#         plt.text(xline5_6[0],yline5_6[0], int(theta[4]), size=15, color='purple')
+#         plt.text(xline3_4[0],yline3_4[0], int(theta[5]), size=15, color='purple')
+#         plt.text(xline6_7[0],yline6_7[0], int(theta[6]), size=15, color='purple')
+#         plt.text(xline1_8[0],yline1_8[0]+0.03, int(theta[7]), size=15, color='purple')
+#         plt.text(xline1_11[0],yline1_11[0]-0.03, int(theta[8]), size=15, color='purple')
+#         plt.text(xline8_9[0],yline8_9[0], int(theta[9]), size=15, color='purple')
+#         plt.text(xline11_12[0],yline11_12[0], int(theta[10]), size=15, color='purple')
+#         plt.text(xline9_10[0],yline9_10[0], int(theta[11]), size=15, color='purple')
+#         plt.text(xline12_13[0],yline12_13[0], int(theta[12]), size=15, color='purple')
       except:
         print("An exception occurred") 
 
