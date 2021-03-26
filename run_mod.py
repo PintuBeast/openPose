@@ -47,7 +47,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
     parser.add_argument('--postID', type=str, default='none')
     parser.add_argument('--userID', type=str, default='none')
-    parser.add_argument('--imagePath', type=str, default='./images/')
     parser.add_argument('--model', type=str, default='cmu',
                         help='cmu / mobilenet_thin / mobilenet_v2_large / mobilenet_v2_small')
     parser.add_argument('--resize', type=str, default='0x0',
@@ -65,23 +64,21 @@ if __name__ == '__main__':
     else:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     
-    os.system('rm -r /openPose/images/*')
 
     try: 
-      os.mkdir('/openPose/images') 
+      os.mkdir('/openPose/images_'+args.postID) 
     except OSError as error: 
       print(error)   
 
-    os.system('rm -r /openPose/output/*')
 
     try: 
-      os.mkdir('/openPose/output') 
+      os.mkdir('/openPose/output_'+args.postID) 
     except OSError as error: 
       print(error) 
     
    #video 1 split into frames
 
-    src = cv2.VideoCapture('/app/input1.mp4')
+    src = cv2.VideoCapture('/app/'+args.postID+'_input1.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
 
     frame_num = 0
@@ -90,7 +87,7 @@ if __name__ == '__main__':
       ret, frame = src.read()
 
       # Saves image of the current frame in jpg file
-      name = '/openPose/images/f1rame_' + str(frame_num) + '.png'
+      name = '/openPose/images_'+args.postID+'/f1rame_' + str(frame_num) + '.png'
       #print ('Creating...' + name)
       cv2.imwrite(name, frame)
 
@@ -105,7 +102,7 @@ if __name__ == '__main__':
 
    #video 2 split into frames
 
-    src = cv2.VideoCapture('/app/input2.mp4')
+    src = cv2.VideoCapture('/app/'+args.postID+'_input2.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
 
     frame_num = 0
@@ -114,7 +111,7 @@ if __name__ == '__main__':
       ret, frame = src.read()
 
       # Saves image of the current frame in jpg file
-      name = '/openPose/images/f2rame_' + str(frame_num) + '.png'
+      name = '/openPose/images_'+args.postID+'/f2rame_' + str(frame_num) + '.png'
       #print ('Creating...' + name)
       cv2.imwrite(name, frame)
 
@@ -126,8 +123,8 @@ if __name__ == '__main__':
     cv2.destroyAllWindows()
 
 
-    f1Count = len(glob.glob1('/openPose/images',"f1rame_*.png"))
-    f2Count = len(glob.glob1('/openPose/images',"f2rame_*.png"))
+    f1Count = len(glob.glob1('/openPose/images_'+args.postID,"f1rame_*.png"))
+    f2Count = len(glob.glob1('/openPose/images_'+args.postID,"f2rame_*.png"))
 
     fCount = f1Count if f1Count < f2Count else f2Count 
     # processing first video
@@ -153,9 +150,9 @@ if __name__ == '__main__':
             
 
       # estimate human poses from a single image !
-      image = common.read_imgfile('/openPose/images/f1rame_'+str(i)+'.png', None, None)
+      image = common.read_imgfile('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png', None, None)
       if image is None:
-          logger.error('Image can not be read, path=%s' % args.imagePath)
+          logger.error('Image can not be read')
           sys.exit(-1)
       t = time.time()
       humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
@@ -182,14 +179,14 @@ if __name__ == '__main__':
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
-      cv2.imwrite('/openPose/output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+      cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
         'num': i,
         'array':data1}
       )
 
-    with open('/openPose/output/data1.json', 'w') as outfile:
+    with open('/openPose/output_'+args.postID+'/data1.json', 'w') as outfile:
       json.dump(data, outfile)
 
 
@@ -214,9 +211,9 @@ if __name__ == '__main__':
           print("File write exception from run_mod :",sys.exc_info()[0]) 
       
       # estimate human poses from a single image !
-      image = common.read_imgfile('/openPose/images/f2rame_'+str(i)+'.png', None, None)
+      image = common.read_imgfile('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png', None, None)
       if image is None:
-          logger.error('Image can not be read, path=%s' % args.imagePath)
+          logger.error('Image can not be read')
           sys.exit(-1)
       t = time.time()
       humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
@@ -243,14 +240,14 @@ if __name__ == '__main__':
       #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
 
       image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
-      cv2.imwrite('/openPose/output/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+      cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
         'num': i,
         'array':data1}
       )
 
-    with open('/openPose/output/data2.json', 'w') as outfile:
+    with open('/openPose/output_'+args.postID+'/data2.json', 'w') as outfile:
       json.dump(data, outfile)  
 
     #os.system('ffmpeg -i /openPose/output/f1rame_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p /openPose/output/out1.mp4')
@@ -259,12 +256,12 @@ if __name__ == '__main__':
     
       
     for i in range(0,fCount):
-      s_img =cv2.resize(cv2.imread('/openPose/output/f1rame_'+str(i)+'.png'),(270,480))
-      l_img = cv2.resize(cv2.imread('/openPose/output/f2rame_'+str(i)+'.png'),(1080,1920) )
+      s_img =cv2.resize(cv2.imread('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
+      l_img = cv2.resize(cv2.imread('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
       x_offset=y_offset=0
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
-      cv2.imwrite('/openPose/output/combo_'+str(i)+'.png',cv2.cvtColor(l_img, cv2.COLOR_BGR2RGB))
-    os.system('ffmpeg -i /openPose/output/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output/output_main.mp4')
+      cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',cv2.cvtColor(l_img, cv2.COLOR_BGR2RGB))
+    os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
     
    
     def getScore(x):
@@ -333,12 +330,12 @@ if __name__ == '__main__':
     v2line0_1=np.zeros((2,))
     theta=np.zeros((13,))
 
-    with open('/openPose/output/data1.json') as f1:
+    with open('/openPose/output_'+args.postID+'/data1.json') as f1:
       frame_array1= json.load(f1)
 
     f1Count=  len(frame_array1['frames'])
 
-    with open('/openPose/output/data2.json') as f2:
+    with open('/openPose/output_'+args.postID+'/data2.json') as f2:
       frame_array2= json.load(f2)
 
     f2Count=  len(frame_array2['frames']) 
@@ -691,19 +688,29 @@ if __name__ == '__main__':
       im = cv2.imread('/openPose/templates/1_star.png', 1)
 
     cv2.putText(im, 'Score: '+str(netSim), (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
-    cv2.imwrite('/openPose/output/score.png', im)
-    os.system('ffmpeg -loop 1 -i /openPose/output/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/score.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/best_moments.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/poor_moments.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/output/combo_'+str(minSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/poor_moments1.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/output/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output/best_moments1.mp4')
-    os.system('ffmpeg -f concat -safe 0 -i /openPose/clipList.txt -c copy /openPose/output/output_full.mp4 -y')
+    cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/score.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(minSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments1.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments1.mp4')
+    
+    fClip = open('/openPose/output_'+args.postID+'/clipList.txt', "w")
+    fClip.write('file \'/openPose/output_'+args.postID+'/output_main.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/score.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/best_moments.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/best_moments1.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'' )
+    fClip.close()
+
+    os.system('ffmpeg -f concat -safe 0 -i /openPose/output_'+args.postID+'/clipList.txt -c copy /openPose/output_'+args.postID+'/output_full.mp4 -y')
     
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
     bucket = storage.bucket()
     blob = bucket.blob('ComparisonVideos/'+videoName)
-    outfile='/openPose/output/output_full.mp4'
+    outfile='/openPose/output_'+args.postID+'/output_full.mp4'
     with open(outfile, 'rb') as my_file:
       blob.upload_from_file(my_file)
     db = firestore.client()
@@ -714,8 +721,9 @@ if __name__ == '__main__':
     progress=100.0
     try:
       ref.child(args.postID).set({'object':{'progress':progress}})
-      print('progress is:',str(progress))
       logger.info('progress is %s' % str(progress))
+      os.system('rm -r /openPose/images_'+args.postID)
+      os.system('rm -r /openPose/output_'+args.postID)
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
