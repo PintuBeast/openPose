@@ -19,11 +19,11 @@ import firebase_admin
 from firebase_admin import credentials,db,firestore, storage
 from getmac import get_mac_address as gma
 
-# cred=credentials.Certificate('/app/firebasecredential.json')
-# firebase_admin.initialize_app(cred, {
-#     'databaseURL': 'https://demoplayer-ecc96.firebaseio.com',
-#     'storageBucket': 'demoplayer-ecc96.appspot.com'
-# })
+cred=credentials.Certificate('/app/firebasecredential.json')
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://demoplayer-ecc96.firebaseio.com',
+    'storageBucket': 'demoplayer-ecc96.appspot.com'
+})
 
 ref = db.reference('progress')
 
@@ -725,8 +725,11 @@ if __name__ == '__main__':
       logger.info('progress is %s' % str(progress))  
       os.system('rm -r /openPose/images_'+args.postID)
       os.system('rm -r /openPose/output_'+args.postID)
-      ref=db.reference('serverStatus/'+str(gma()+'/runningJobs'))
-      ref.set(ref.get()-1)
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
+    try:
+      ref1=db.reference('serverStatus/'+str(gma())+'/runningJobs')
+      ref1.set(ref1.get()-1)
+    except:
+      print("Firebase write exception from run_mod: ",sys.exc_info()[0]) 
