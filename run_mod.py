@@ -17,6 +17,7 @@ from numpy.linalg import norm
 import matplotlib.pyplot as plt
 import firebase_admin
 from firebase_admin import credentials,db,firestore, storage
+from getmac import get_mac_address as gma
 
 # cred=credentials.Certificate('/app/firebasecredential.json')
 # firebase_admin.initialize_app(cred, {
@@ -721,9 +722,11 @@ if __name__ == '__main__':
     progress=100.0
     try:
       ref.child(args.postID).set({'object':{'progress':progress}})
-      logger.info('progress is %s' % str(progress))
+      logger.info('progress is %s' % str(progress))  
       os.system('rm -r /openPose/images_'+args.postID)
       os.system('rm -r /openPose/output_'+args.postID)
+      ref=db.reference('serverStatus/'+str(gma()+'/runningJobs'))
+      ref.set(ref.get()-1)
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
