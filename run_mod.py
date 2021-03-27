@@ -19,11 +19,12 @@ import firebase_admin
 from firebase_admin import credentials,db,firestore, storage
 from getmac import get_mac_address as gma
 
-cred=credentials.Certificate('/app/firebasecredential.json')
-firebase_admin.initialize_app(cred, {
+if not firebase_admin._apps:
+  cred=credentials.Certificate('/app/firebasecredential.json')
+  firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://demoplayer-ecc96.firebaseio.com',
     'storageBucket': 'demoplayer-ecc96.appspot.com'
-})
+  })
 
 ref = db.reference('progress')
 
