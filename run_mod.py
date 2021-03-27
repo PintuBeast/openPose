@@ -340,7 +340,7 @@ if __name__ == '__main__':
 
     f2Count=  len(frame_array2['frames']) 
     pose2=np.zeros((18*2*f2Count,))
-    print('frame:1:',f1Count,'frame 2:',f2Count)
+    #print('frame:1:',f1Count,'frame 2:',f2Count)
     minFrames=f1Count if f1Count < f2Count else f2Count
     
     x1Array=np.zeros((18,minFrames))
@@ -668,7 +668,7 @@ if __name__ == '__main__':
       sim=sim/13
       simArr[i]=sim
       netSim=netSim+sim
-      print('Score is ',sim)
+    #  print('Score is ',sim)
     #  plt.savefig('/openPose/output/output_'+str(i)+'.png')
 
     #  plt.cla()
@@ -676,7 +676,7 @@ if __name__ == '__main__':
     maxSim=np.argmax(simArr)
     minSim=np.argmin(simArr) 
 
-    print('Net Similarity:',netSim)
+    #print('Net Similarity:',netSim)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     
