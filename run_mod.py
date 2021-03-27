@@ -714,8 +714,8 @@ if __name__ == '__main__':
     outfile='/openPose/output_'+args.postID+'/output_full.mp4'
     with open(outfile, 'rb') as my_file:
       blob.upload_from_file(my_file)
-    db = firestore.client()
-    result=db.collection('copy_objects').document(args.postID).update({'score':netSim})
+    db1 = firestore.client()
+    result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
    # print(result)
    # logger.info('upload and update result  is %s' % str(result))
     
