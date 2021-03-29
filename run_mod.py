@@ -161,6 +161,8 @@ if __name__ == '__main__':
       elapsed = time.time() - t
       data1 = {}
       data1['parts'] = []
+      measure1=np.zeros((len(humans),))
+      kk=0
       for human in humans:
             # draw point
             for ii in range(common.CocoPart.Background.value):
@@ -169,18 +171,22 @@ if __name__ == '__main__':
 
                 body_part = human.body_parts[ii]
                # center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
-                
-                
+                x1= human.body_parts[10].x
+                y1=human.body_parts[10].y
+                x2= human.body_parts[1].x
+                y2=human.body_parts[1].y
+                measure1[kk] = (x1-x2)**2+(y1-y2)**2
+            
                 data1['parts'].append({
                 'id': ii,
                 'x': body_part.x,
                 'y': body_part.y
                 })
-            break    
-
+            kk=kk+1
+            break 
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
-      image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure)+1], imgcopy=False)
       cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
@@ -222,6 +228,8 @@ if __name__ == '__main__':
       elapsed = time.time() - t
       data1 = {}
       data1['parts'] = []
+      measure2=np.zeros((len(humans),))
+      kk=0
       for human in humans:
             # draw point
             for ii in range(common.CocoPart.Background.value):
@@ -230,18 +238,23 @@ if __name__ == '__main__':
 
                 body_part = human.body_parts[ii]
                # center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
-                
+                x1= human.body_parts[10].x
+                y1=human.body_parts[10].y
+                x2= human.body_parts[1].x
+                y2=human.body_parts[1].y
+                measure2[kk] = (x1-x2)**2+(y1-y2)**2               
                 
                 data1['parts'].append({
                 'id': ii,
                 'x': body_part.x,
                 'y': body_part.y
                 })
+            kk=kk+1    
             break    
 
       #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
 
-      image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure):np.argmax(measure2)+1], imgcopy=False)
       cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
