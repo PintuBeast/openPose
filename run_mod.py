@@ -186,7 +186,7 @@ if __name__ == '__main__':
             break 
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
-      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure)+1], imgcopy=False)
+      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
       cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
@@ -254,7 +254,7 @@ if __name__ == '__main__':
 
       #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
 
-      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure):np.argmax(measure2)+1], imgcopy=False)
+      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure2):np.argmax(measure2)+1], imgcopy=False)
       cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
