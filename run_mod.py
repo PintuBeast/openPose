@@ -170,18 +170,20 @@ if __name__ == '__main__':
                     continue
 
                 body_part = human.body_parts[ii]
+                
+                if 10 in human.body_parts.keys() and 1 in human.body_parts.keys():
                # center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
-                x1= human.body_parts[10].x
-                y1=human.body_parts[10].y
-                x2= human.body_parts[1].x
-                y2=human.body_parts[1].y
-                measure1[kk] = (x1-x2)**2+(y1-y2)**2
+                  x1= human.body_parts[10].x
+                  y1=human.body_parts[10].y
+                  x2= human.body_parts[1].x
+                  y2=human.body_parts[1].y
+                  measure1[kk] = (x1-x2)**2+(y1-y2)**2
             
-                data1['parts'].append({
-                'id': ii,
-                'x': body_part.x,
-                'y': body_part.y
-                })
+                  data1['parts'].append({
+                  'id': ii,
+                  'x': body_part.x,
+                  'y': body_part.y
+                  })
             kk=kk+1
             break 
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
@@ -241,17 +243,18 @@ if __name__ == '__main__':
 
                 body_part = human.body_parts[ii]
                # center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
-                x1= human.body_parts[10].x
-                y1=human.body_parts[10].y
-                x2= human.body_parts[1].x
-                y2=human.body_parts[1].y
-                measure2[kk] = (x1-x2)**2+(y1-y2)**2               
+                if 10 in human.body_parts.keys() and 1 in human.body_parts.keys():
+                  x1= human.body_parts[10].x
+                  y1=human.body_parts[10].y
+                  x2= human.body_parts[1].x
+                  y2=human.body_parts[1].y
+                  measure2[kk] = (x1-x2)**2+(y1-y2)**2               
                 
-                data1['parts'].append({
-                'id': ii,
-                'x': body_part.x,
-                'y': body_part.y
-                })
+                  data1['parts'].append({
+                  'id': ii,
+                  'x': body_part.x,
+                  'y': body_part.y
+                  })
             kk=kk+1    
             break    
 
