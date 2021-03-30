@@ -723,9 +723,9 @@ if __name__ == '__main__':
 
     if netSim>=80:
       im = cv2.imread('/openPose/templates/3_star.png', 1)  
-    if netSim>=50 and netSim<80:
+    elif netSim>=50 and netSim<80:
       im = cv2.imread('/openPose/templates/2_star.png', 1) 
-    if netSim>=20 and netSim<50:
+    elif netSim>=20 and netSim<50:
       im = cv2.imread('/openPose/templates/1_star.png', 1)    
     else:
       im = cv2.imread('/openPose/templates/0_star.png', 1)
