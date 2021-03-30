@@ -178,18 +178,23 @@ if __name__ == '__main__':
                   x2= human.body_parts[1].x
                   y2=human.body_parts[1].y
                   measure1[kk] = (x1-x2)**2+(y1-y2)**2
-            
-                  data1['parts'].append({
-                  'id': ii,
-                  'x': body_part.x,
-                  'y': body_part.y
-                  })
             kk=kk+1
-            break 
+            
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
       try:
         image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
+        human1=humans[np.argmax(measure1)]
+        for ii in range(common.CocoPart.Background.value):
+                if ii not in human1.body_parts.keys():
+                    continue
+
+                body_part = human1.body_parts[ii]
+                data1['parts'].append({
+                'id': ii,
+                'x': body_part.x,
+                'y': body_part.y
+                })        
       except:  
         image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
       cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -249,18 +254,24 @@ if __name__ == '__main__':
                   x2= human.body_parts[1].x
                   y2=human.body_parts[1].y
                   measure2[kk] = (x1-x2)**2+(y1-y2)**2               
-                
-                  data1['parts'].append({
-                  'id': ii,
-                  'x': body_part.x,
-                  'y': body_part.y
-                  })
-            kk=kk+1    
-            break    
+            kk=kk+1        
 
       #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
       try: 
         image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure2):np.argmax(measure2)+1], imgcopy=False)
+        human2=humans[np.argmax(measure2)]
+        for ii in range(common.CocoPart.Background.value):
+                if ii not in human2.body_parts.keys():
+                    continue
+
+                body_part = human2.body_parts[ii]
+                data1['parts'].append({
+                'id': ii,
+                'x': body_part.x,
+                'y': body_part.y
+                }) 
+
+
       except:
         image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)  
       cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -745,8 +756,8 @@ if __name__ == '__main__':
     try:
       ref.child(args.postID).set({'object':{'progress':progress}})
       logger.info('progress is %s' % str(progress))  
-      os.system('rm -r /openPose/images_'+args.postID)
-      os.system('rm -r /openPose/output_'+args.postID)
+     # os.system('rm -r /openPose/images_'+args.postID)
+     # os.system('rm -r /openPose/output_'+args.postID)
     except:
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
