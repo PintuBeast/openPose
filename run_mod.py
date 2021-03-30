@@ -183,7 +183,7 @@ if __name__ == '__main__':
       logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
       #print('inference f1_rame_'str(i),' is 'elapsed, 'seconds')
       try:
-        image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
+       # image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
         human1=humans[np.argmax(measure1)]
         for ii in range(common.CocoPart.Background.value):
                 if ii not in human1.body_parts.keys():
@@ -196,8 +196,9 @@ if __name__ == '__main__':
                 'y': body_part.y
                 })        
       except:  
-        image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
-      cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+          continue
+      #  image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+     # cv2.imwrite('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
         'num': i,
@@ -258,7 +259,7 @@ if __name__ == '__main__':
 
       #logger.info('inference image f2rame_: %s in %.4f seconds.' % (str(i), elapsed))
       try: 
-        image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure2):np.argmax(measure2)+1], imgcopy=False)
+       # image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure2):np.argmax(measure2)+1], imgcopy=False)
         human2=humans[np.argmax(measure2)]
         for ii in range(common.CocoPart.Background.value):
                 if ii not in human2.body_parts.keys():
@@ -273,8 +274,9 @@ if __name__ == '__main__':
 
 
       except:
-        image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)  
-      cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+          continue
+     #   image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)  
+     # cv2.imwrite('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
      
       data['frames'].append({
         'num': i,
@@ -289,13 +291,7 @@ if __name__ == '__main__':
 
     
       
-    for i in range(0,fCount):
-      s_img =cv2.resize(cv2.imread('/openPose/output_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
-      l_img = cv2.resize(cv2.imread('/openPose/output_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
-      x_offset=y_offset=0
-      l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
-      cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',cv2.cvtColor(l_img, cv2.COLOR_BGR2RGB))
-    os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
+   
     
    
     def getScore(x):
@@ -714,12 +710,25 @@ if __name__ == '__main__':
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     
+    for i in range(0,fCount):
+      s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
+      l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
+      x_offset=y_offset=0
+      l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
+      cv2.putText(l_img, 'Score', (l_img.shape[1]-200,100), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+      cv2.putText(l_img, str(simArr[i]), (l_img.shape[1]-200,200), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+      cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',l_img)
+    os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
+
+
     if netSim>=80:
-      im = cv2.imread('/openPose/templates/1_star.png', 1)  
+      im = cv2.imread('/openPose/templates/3_star.png', 1)  
     if netSim>=50 and netSim<80:
       im = cv2.imread('/openPose/templates/2_star.png', 1) 
+    if netSim>=20 and netSim<50:
+      im = cv2.imread('/openPose/templates/1_star.png', 1)    
     else:
-      im = cv2.imread('/openPose/templates/1_star.png', 1)
+      im = cv2.imread('/openPose/templates/0_star.png', 1)
 
     cv2.putText(im, 'Score: '+str(netSim), (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
