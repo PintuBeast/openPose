@@ -731,8 +731,10 @@ if __name__ == '__main__':
       im = cv2.imread('/openPose/templates/1_star.png', 1)    
     else:
       im = cv2.imread('/openPose/templates/0_star.png', 1)
-
-    cv2.putText(im, 'Score: '+str(netSim), (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+    if netSim>=0:
+      cv2.putText(im, 'Score: '+str(netSim), (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+    else:
+      cv2.putText(im, 'Score: Invalid Video', (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/score.mp4')
     os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
