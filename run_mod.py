@@ -372,7 +372,8 @@ if __name__ == '__main__':
     pose2=np.zeros((18*2*f2Count,))
     #print('frame:1:',f1Count,'frame 2:',f2Count)
     minFrames=f1Count if f1Count < f2Count else f2Count
-    
+    if minFrames <1:
+      minFrames=1000
     x1Array=np.zeros((18,minFrames))
     y1Array=np.zeros((18,minFrames))
     x2Array=np.zeros((18,minFrames))
