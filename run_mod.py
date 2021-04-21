@@ -710,7 +710,18 @@ if __name__ == '__main__':
     #print('Net Similarity:',netSim)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
+    top=0
+    bottom=0
+    for x in simArr:
+      if x>80:
+        top=top+x*30
+        bottom=bottom+30
+      else:
+        top=top+x
+        bottom=bottom+1
     
+    if bottom>0:
+      netSim=top/bottom     
     for i in range(0,fCount):
       s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
       l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
