@@ -44,13 +44,13 @@ if __name__ == '__main__':
        #video 1 split into frames
 
     try: 
-      os.mkdir('content/openPose/images') 
+      os.mkdir('/content/openPose/images') 
     except OSError as error: 
       print(error)   
 
 
     try: 
-      os.mkdir('content/openPose/output') 
+      os.mkdir('/content/openPose/output') 
     except OSError as error: 
       print(error) 
 
