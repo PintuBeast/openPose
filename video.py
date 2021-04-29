@@ -44,13 +44,13 @@ if __name__ == '__main__':
        #video 1 split into frames
 
     try: 
-      os.mkdir('/openPose/images_'+args.postID) 
+      os.mkdir('content/openPose/images') 
     except OSError as error: 
       print(error)   
 
 
     try: 
-      os.mkdir('/openPose/output_'+args.postID) 
+      os.mkdir('content/openPose/output') 
     except OSError as error: 
       print(error) 
 
@@ -111,3 +111,11 @@ if __name__ == '__main__':
       cv2.imwrite('./output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
     os.system('ffmpeg -i ./output/f1rame_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y ./output/output_main.mp4')
+
+
+
+        
+        
+        
+        
+        
