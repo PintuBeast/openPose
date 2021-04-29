@@ -43,8 +43,18 @@ if __name__ == '__main__':
 
        #video 1 split into frames
 
+    try: 
+      os.mkdir('/openPose/images_'+args.postID) 
+    except OSError as error: 
+      print(error)   
 
-    src = cv2.VideoCapture('./videos/input.mp4')
+
+    try: 
+      os.mkdir('/openPose/output_'+args.postID) 
+    except OSError as error: 
+      print(error) 
+
+    src = cv2.VideoCapture('./videos/input1.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
 
     frame_num = 0
@@ -64,12 +74,12 @@ if __name__ == '__main__':
     src.release()
     cv2.destroyAllWindows()
 
-    f1Count = len(glob.glob1('./images/f1rame_*.png"))
+    f1Count = len(glob.glob1('./images',"f1rame_*.png"))
 
-for i in range(0,f1Count): 
+    for i in range(0,f1Count): 
  
       # estimate human poses from a single image !
-      image = common.read_imgfile('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png', None, None)
+      image = common.read_imgfile('./images/f1rame_'+str(i)+'.png', None, None)
       if image is None:
           logger.error('Image can not be read')
           sys.exit(-1)
@@ -95,17 +105,9 @@ for i in range(0,f1Count):
                   measure1[kk] = (x1-x2)**2+(y1-y2)**2
             kk=kk+1
             
-      logger.info('inference image f1rame_: %s in %.4f seconds.' % (str(i), elapsed))
+     
      
       image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
       cv2.imwrite('./output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
-os.system('ffmpeg -i ./output/f1rame_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y ./output/output_main.mp4')
-
-
-
-        
-        
-        
-        
-        
+    os.system('ffmpeg -i ./output/f1rame_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y ./output/output_main.mp4')
