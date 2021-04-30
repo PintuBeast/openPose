@@ -746,8 +746,8 @@ if __name__ == '__main__':
       big_w=1920      
       
     for i in range(0,fCount):
-      s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
-      l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
+      s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(small_w,small_h))
+      l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(big_w,big_h) )
       x_offset=y_offset=0
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
       cv2.putText(l_img, 'Score', (l_img.shape[1]-200,100), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
