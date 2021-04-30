@@ -722,6 +722,29 @@ if __name__ == '__main__':
     
     if bottom>0:
       netSim=top/bottom     
+      
+    h1,w1= cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(1)+'.png').shape[:2]
+    h2,w2= cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(1)+'.png').shape[:2]
+    
+    small_h=480
+    small_w= 270
+    big_h=1920
+    big_w=1080
+
+    if h1>w1:
+      small_h=480
+      small_w=270
+    else:
+      small_h=270
+      small_w=480
+
+    if h2>w2:
+      big_h=1920
+      big_w=1080
+    else:
+      big_h=1080
+      big_w=1920      
+      
     for i in range(0,fCount):
       s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(270,480))
       l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(1080,1920) )
