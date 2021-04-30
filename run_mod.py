@@ -785,7 +785,11 @@ if __name__ == '__main__':
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'' )
     fClip.close()
 
-    os.system('ffmpeg -f concat -safe 0 -i /openPose/output_'+args.postID+'/clipList.txt -c copy /openPose/output_'+args.postID+'/output_full.mp4 -y')
+    os.system('ffmpeg -f concat -safe 0 -i /openPose/output_'+args.postID+'/clipList.txt -c copy /openPose/output_'+args.postID+'/output_full1.mp4 -y')
+
+    os.system('ffmpeg -i /app/'+args.postID+'_input1.mp4 -q:a 0 -map a /openPose/output_'+args.postID+'/audio1.mp3 -y') 
+    os.system('ffmpeg -i "concat:/openPose/output_' +args.postID+'/audio1.mp3|/openPose/templates/mooplay_theme.mp3" -acodec copy /openPose/output_'+args.postID+'/audio.mp3 -y' ) 
+    os.system('ffmpeg -i /openPose/output_'+args.postID+'/output_full1.mp4 -i /openPose/output_'+args.postID+'/audio.mp3 -c:v copy -c:a aac /openPose/output_'+args.postID+'/output_full.mp4 -y')  
     
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
