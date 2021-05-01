@@ -721,8 +721,8 @@ if __name__ == '__main__':
         bottom=bottom+1
     
     if bottom>0:
-      netSim=top/bottom     
-      
+      netSim=top/bottom 
+    
     h1,w1= cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(1)+'.png').shape[:2]
     h2,w2= cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(1)+'.png').shape[:2]
     
@@ -730,7 +730,9 @@ if __name__ == '__main__':
     small_w= 270
     big_h=1920
     big_w=1080
-
+    orientation='vertical'
+    x_score=100
+    y_score=700
     if h1>w1:
       small_h=480
       small_w=270
@@ -741,10 +743,14 @@ if __name__ == '__main__':
     if h2>w2:
       big_h=1920
       big_w=1080
+      orientation='vertical'
     else:
       big_h=1080
-      big_w=1920      
-      
+      big_w=1920
+      x_score=350
+      y_score=700
+      orientation='horizontal'
+
     for i in range(0,fCount):
       s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(small_w,small_h))
       l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(big_w,big_h) )
@@ -752,27 +758,27 @@ if __name__ == '__main__':
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
       cv2.putText(l_img, 'Score', (l_img.shape[1]-200,100), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
       if len(simArr)>=fCount:
-        cv2.putText(l_img, str(simArr[i]), (l_img.shape[1]-200,200), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(l_img, str(round(simArr[i],1)), (l_img.shape[1]-200,200), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
       cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',l_img)
     os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
 
 
     if netSim>=80:
-      im = cv2.imread('/openPose/templates/3_star.png', 1)  
+      im = cv2.imread('/openPose/templates/3_star_'+orientation+'.png', 1)  
     elif netSim>=50 and netSim<80:
-      im = cv2.imread('/openPose/templates/2_star.png', 1) 
+      im = cv2.imread('/openPose/templates/2_star_'+orientation+'.png', 1) 
     elif netSim>=20 and netSim<50:
-      im = cv2.imread('/openPose/templates/1_star.png', 1)    
+      im = cv2.imread('/openPose/templates/1_star_'+orientation+'.png', 1)    
     else:
-      im = cv2.imread('/openPose/templates/0_star.png', 1)
+      im = cv2.imread('/openPose/templates/0_star_'+orientation+'.png', 1)
     if netSim>=0:
-      cv2.putText(im, 'Score: '+str(netSim), (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+      cv2.putText(im, 'Score: '+str(round(netSim,1)), (x_score,y_score), font, 4, (255, 0, 0), 2, cv2.LINE_AA)
     else:
       cv2.putText(im, 'Score: Invalid Video', (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/score.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments_'+orientation+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments_'+orientation+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments.mp4')
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(minSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments1.mp4')
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments1.mp4')
     
@@ -785,12 +791,12 @@ if __name__ == '__main__':
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'' )
     fClip.close()
 
+
     os.system('ffmpeg -f concat -safe 0 -i /openPose/output_'+args.postID+'/clipList.txt -c copy /openPose/output_'+args.postID+'/output_full1.mp4 -y')
 
     os.system('ffmpeg -i /app/'+args.postID+'_input1.mp4 -q:a 0 -map a /openPose/output_'+args.postID+'/audio1.mp3 -y') 
     os.system('ffmpeg -i "concat:/openPose/output_' +args.postID+'/audio1.mp3|/openPose/templates/mooplay_theme.mp3" -acodec copy /openPose/output_'+args.postID+'/audio.mp3 -y' ) 
-    os.system('ffmpeg -i /openPose/output_'+args.postID+'/output_full1.mp4 -i /openPose/output_'+args.postID+'/audio.mp3 -c:v copy -c:a aac /openPose/output_'+args.postID+'/output_full.mp4 -y')  
-    
+    os.system('ffmpeg -i /openPose/output_'+args.postID+'/output_full1.mp4 -i /openPose/output_'+args.postID+'/audio.mp3 -c:v copy -c:a aac /openPose/output_'+args.postID+'/output_full.mp4 -y')
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
     bucket = storage.bucket()
