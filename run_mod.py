@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 import firebase_admin
 from firebase_admin import credentials,db,firestore, storage
 from getmac import get_mac_address as gma
+from boto3.session import Session
+import boto3
+
 
 if not firebase_admin._apps:
   cred=credentials.Certificate('/app/firebasecredential.json')
@@ -761,8 +764,7 @@ if __name__ == '__main__':
         cv2.putText(l_img, str(round(simArr[i],1)), (l_img.shape[1]-200,200), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
       cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',l_img)
     os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
-
-
+    
     if netSim>=80:
       im = cv2.imread('/openPose/templates/3_star_'+orientation+'.png', 1)  
     elif netSim>=50 and netSim<80:
@@ -799,13 +801,26 @@ if __name__ == '__main__':
     os.system('ffmpeg -i /openPose/output_'+args.postID+'/output_full1.mp4 -i /openPose/output_'+args.postID+'/audio.mp3 -c:v copy -c:a aac /openPose/output_'+args.postID+'/output_full.mp4 -y')
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
-    bucket = storage.bucket()
-    blob = bucket.blob('ComparisonVideos/'+videoName)
-    outfile='/openPose/output_'+args.postID+'/output_full.mp4'
-    with open(outfile, 'rb') as my_file:
-      blob.upload_from_file(my_file)
+
+
+#    bucket = storage.bucket()
+#    blob = bucket.blob('ComparisonVideos/'+videoName)
+#    outfile='/openPose/output_'+args.postID+'/output_full.mp4'
+#    with open(outfile, 'rb') as my_file:
+#      blob.upload_from_file(my_file)
+
+    ACCESS_KEY = 'AKIAXEUV22GWDOYD4HUN'
+    SECRET_KEY = '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'
+    session = Session(aws_access_key_id=ACCESS_KEY,
+              aws_secret_access_key=SECRET_KEY)
+    s3 = session.resource('s3')
+    buck = s3.Bucket('mooplaystorage')
+    buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read'})
+
+    com_url="https://mooplaystorage.s3.ap-south-1.amazonaws.com/"+'ComparisonVideos/'+videoName
     db1 = firestore.client()
     result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
+    result=db1.collection('copy_objects').document(args.postID).update({'comparison_video_url':com_url})
    # print(result)
    # logger.info('upload and update result  is %s' % str(result))
     
@@ -823,3 +838,4 @@ if __name__ == '__main__':
       ref1.set(ref1.get()-1)
     except:
       print("Firebase write exception from run_mod: ",sys.exc_info()[0]) 
+
