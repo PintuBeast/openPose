@@ -106,9 +106,9 @@ if __name__ == '__main__':
             kk=kk+1
             
      
-     
-      image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
-      cv2.imwrite('./output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+      if(len(humans))>0:
+        image = TfPoseEstimator.draw_humans(image, humans[np.argmax(measure1):np.argmax(measure1)+1], imgcopy=False)
+        cv2.imwrite('./output/f1rame_'+str(i)+'.png',cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
     os.system('ffmpeg -i ./output/f1rame_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y ./output/output_main.mp4')
 
