@@ -809,8 +809,8 @@ if __name__ == '__main__':
 #    with open(outfile, 'rb') as my_file:
 #      blob.upload_from_file(my_file)
 
-    ACCESS_KEY = 'AKIAXEUV22GWDOYD4HUN'
-    SECRET_KEY = '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'
+    ACCESS_KEY = 'AKIAXEUV22GWJCRTK74C'
+    SECRET_KEY = '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'
     session = Session(aws_access_key_id=ACCESS_KEY,
               aws_secret_access_key=SECRET_KEY)
     s3 = session.resource('s3')
