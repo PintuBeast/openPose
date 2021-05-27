@@ -808,13 +808,15 @@ if __name__ == '__main__':
 #    outfile='/openPose/output_'+args.postID+'/output_full.mp4'
 #    with open(outfile, 'rb') as my_file:
 #      blob.upload_from_file(my_file)
-
-    ACCESS_KEY = 'AKIAXEUV22GWJCRTK74C'
-    SECRET_KEY = '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'
+    conf=firestore.client().collection('confidential').document('doc1').get().to_dict()
+    ACCESS_KEY = conf['accessKeyId']
+    SECRET_KEY = conf['secretAccessKey']
     session = Session(aws_access_key_id=ACCESS_KEY,
               aws_secret_access_key=SECRET_KEY)
     s3 = session.resource('s3')
     buck = s3.Bucket('mooplaystorage')
+    
+    
     buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read'})
 
     com_url="https://mooplaystorage.s3.ap-south-1.amazonaws.com/"+'ComparisonVideos/'+videoName
