@@ -818,13 +818,13 @@ if __name__ == '__main__':
     
     
     buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read'})
-
+    logger.info('Comparison video uploaded to AWS')
     com_url="https://mooplaystorage.s3.ap-south-1.amazonaws.com/"+'ComparisonVideos/'+videoName
     db1 = firestore.client()
     result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
     result=db1.collection('copy_objects').document(args.postID).update({'comparison_video_url':com_url})
    # print(result)
-   # logger.info('upload and update result  is %s' % str(result))
+    logger.info('Comparison URl updated in Firebase result  is %s' % str(result))
     
     progress=100.0
     try:
