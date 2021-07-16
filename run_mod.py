@@ -90,7 +90,8 @@ if __name__ == '__main__':
     while(frame_num< int(src.get(cv2.CAP_PROP_FRAME_COUNT))):
       # Capture frame-by-frame
       ret, frame = src.read()
-
+      if ret == False:
+        break
       # Saves image of the current frame in jpg file
       name = '/openPose/images_'+args.postID+'/f1rame_' + str(frame_num) + '.png'
       #print ('Creating...' + name)
@@ -114,7 +115,8 @@ if __name__ == '__main__':
     while(frame_num< int(src.get(cv2.CAP_PROP_FRAME_COUNT))):
       # Capture frame-by-frame
       ret, frame = src.read()
-
+      if ret == False:
+        break
       # Saves image of the current frame in jpg file
       name = '/openPose/images_'+args.postID+'/f2rame_' + str(frame_num) + '.png'
       #print ('Creating...' + name)
