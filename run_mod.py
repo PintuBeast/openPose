@@ -763,7 +763,7 @@ if __name__ == '__main__':
       l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
       cv2.putText(l_img, 'Score', (l_img.shape[1]-200,100), font, 2, (0,0,255), 2, cv2.LINE_AA)
       if len(simArr)>=fCount:
-        cv2.putText(l_img, str(round(simArr[i],1)), (l_img.shape[1]-200,200), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(l_img, str(round(simArr[i],1)), (l_img.shape[1]-200,200), font, 2, (0,0, 255), 2, cv2.LINE_AA)
       cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',l_img)
     os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
     
