@@ -20,6 +20,7 @@ from firebase_admin import credentials,db,firestore, storage
 from getmac import get_mac_address as gma
 from boto3.session import Session
 import boto3
+from datetime import datetime
 
 
 if not firebase_admin._apps:
@@ -713,7 +714,9 @@ if __name__ == '__main__':
     minSim=np.argmin(simArr) 
 
     #print('Net Similarity:',netSim)
-
+    db1 = firestore.client()
+    result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
+ 
     font = cv2.FONT_HERSHEY_SIMPLEX
     top=0
     bottom=0
@@ -780,19 +783,193 @@ if __name__ == '__main__':
     else:
       cv2.putText(im, 'Score: Invalid Video', (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
+
+    conf=firestore.client().collection('confidential').document('doc1').get().to_dict()
+    ACCESS_KEY = conf['accessKeyId']
+    SECRET_KEY = conf['secretAccessKey']
+    session = Session(aws_access_key_id=ACCESS_KEY,
+              aws_secret_access_key=SECRET_KEY)
+    s3 = session.resource('s3')
+    buck = s3.Bucket('mooplaystorage')
+
+    doc3=firestore.client().collection('copy_objects').document(args.postID).get().to_dict()
+    parentID=doc3['parentID'] 
+    docList=[]
+    docs = db1.collection(u'copy_objects').where(u'parentID', u'==', parentID).where(u'score', u'>=', 0).stream()
+
+    for doc in docs:
+ #   print(f'{doc.id} => {doc.to_dict()}')
+      docList.append(doc.to_dict())
+
+    rankList=[]
+    sortedList=sorted(docList, key = lambda i: i['score'],reverse=True) 
+    post_rank = next((index for (index, d) in enumerate(sortedList) if d["postID"] == args.postID), None)
+    totalPosts=len(sortedList)
+    if(len(sortedList)<=10):
+        print("Case:1 total count<=10") 
+        rankList=[] 
+        count=1
+        for i in sortedList:
+            doc1={}
+            doc1['rank']=count
+            doc1['userName']=i['userName']
+            doc1['userID']=i['userID']
+            doc1['picUrl']=i['userPicUrl']
+            doc1['score']=i['score']
+            rankList.append(doc1)
+            count=count+1
+    elif(post_rank<=7):
+        print("Case:2 post rank<8") 
+        rankList=[]
+        count=1
+        for i in sortedList[0:10]:
+            doc1={}
+            doc1['rank']=count
+            doc1['userName']=i['userName']
+            doc1['userID']=i['userID']
+            doc1['picUrl']=i['userPicUrl']
+            doc1['score']=i['score']
+            rankList.append(doc1)
+            count=count+1
+    else:
+        rankList=[]
+        count=1
+        print("Case:3 total count>10 and post rank>7") 
+        for i in sortedList[0:3]:
+            doc1={}
+            doc1['rank']=count
+            doc1['userName']=i['userName']
+            doc1['userID']=i['userID']
+            doc1['picUrl']=i['userPicUrl']
+            doc1['score']=i['score']
+            rankList.append(doc1)
+            count=count+1
+        if(totalPosts-post_rank<=3):
+            print("Case:3a post rank within final 3") 
+            count=totalPosts-6
+            for i in sortedList[totalPosts-7:totalPosts]:
+                doc1={}
+                doc1['rank']=count
+                doc1['userName']=i['userName']
+                doc1['userID']=i['userID']
+                doc1['picUrl']=i['userPicUrl']
+                doc1['score']=i['score']
+                rankList.append(doc1)
+                count=count+1
+        else:
+            print("Case:3b post rank not within final 3") 
+            count=post_rank-2
+            for i in sortedList[post_rank-3 :post_rank+4]:
+                doc1={}
+                doc1['rank']=count
+                doc1['userName']=i['userName']
+                doc1['userID']=i['userID']
+                doc1['picUrl']=i['userPicUrl']
+                doc1['score']=i['score']
+                rankList.append(doc1)
+                count=count+1
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    color = (0, 0, 0)
+    thickness = 5
+
+    if h2>w2:
+        #   Vertical case
+        image = cv2.imread('/openPose/templates/blank_vertical.png')
+
+        count=0
+        
+        for xx in rankList:
+            fileName='{}'.format(xx['rank'])+'.jpg'
+            buck.download_file( 'ProfilePics/ProfilePic-'+ xx['userID']+'.jpg',fileName)
+            s_img =cv2.resize(cv2.imread(fileName),(100,100))
+
+            mask = np.zeros(s_img.shape, dtype=np.uint8)
+            x,y = 50, 50
+            cv2.circle(mask, (x,y), 50, (255,255,255), -1)
+
+            # Bitwise-and for ROI
+            ROI = cv2.bitwise_and(s_img, mask)
+
+            # Crop mask and turn background white
+            mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+            x,y,w,h = cv2.boundingRect(mask)
+            result = ROI[y:y+h,x:x+w]
+            mask = mask[y:y+h,x:x+w]
+            result[mask==0] = (255,255,255)
+            fileName2='{}'.format(xx['rank'])+'_cropped.jpg'
+            cv2.imwrite(fileName2,result)
+            y=174*(count+2)
+            image[y-96-50:y-96+50,200:300]=result
+            cv2.putText(image, '{}'.format(xx['rank']), (50,y-96), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, xx['userName'], (350,y-96), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, '{:.1f}'.format(xx['score']), (800,y-96), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.line(image, (0,y), (1080,y), color, thickness)
+            count=count+1
+            y=260*(1)
+            cv2.putText(image, 'Rank', (40,y-96), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  'UserName', (320,y-96), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  'Score', (750,y-96), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  datetime.now().strftime("%d/%m/%Y %H:%M:%S"), (100,y-96-70), font, 1, (0, 0, 0), 4, cv2.LINE_AA)
+
+        cv2.imwrite('/openPose/output_'+args.postID+'/table.png',image) 
+    else:
+        
+        #   horizontal case
+        image = cv2.imread('/openPose/templates/blank_horizontal.png')
+        count=0
+        for xx in rankList:
+            fileName='{}'.format(xx['rank'])+'.jpg'
+            buck.download_file( 'ProfilePics/ProfilePic-'+ xx['userID']+'.jpg',fileName)
+            s_img =cv2.resize(cv2.imread(fileName),(60,60))
+
+            mask = np.zeros(s_img.shape, dtype=np.uint8)
+            x,y = 30, 30
+            cv2.circle(mask, (x,y), 30, (255,255,255), -1)
+
+            # Bitwise-and for ROI
+            ROI = cv2.bitwise_and(s_img, mask)
+
+            # Crop mask and turn background white
+            mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+            x,y,w,h = cv2.boundingRect(mask)
+            result = ROI[y:y+h,x:x+w]
+            mask = mask[y:y+h,x:x+w]
+            result[mask==0] = (255,255,255)
+            fileName2='{}'.format(xx['rank'])+'_cropped.jpg'
+            cv2.imwrite(fileName2,result)
+            y=98*(count+2)
+            image[y-54-30:y-54+30,800:860]=result
+            cv2.putText(image, '{}'.format(xx['rank']), (50,y-40), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, xx['userName'], (900,y-40), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, '{:.1f}'.format(xx['score']), (1600,y-40), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.line(image, (0,y), (1920,y), color, thickness)
+            count=count+1
+            y=140*(1)
+            cv2.putText(image, 'Rank', (40,y-54), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  'UserName', (850,y-54), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  'Score', (1550,y-54), font, 2, (0, 0, 0), 4, cv2.LINE_AA)
+            cv2.putText(image,  datetime.now().strftime("%d/%m/%Y %H:%M:%S"), (400,y-54-50), font, 1, (0, 0, 0), 4, cv2.LINE_AA)
+
+        cv2.imwrite('/openPose/output_'+args.postID+'/table.png',image)    
+
+
+
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/score.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments_'+orientation+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments_'+orientation+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(minSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments1.mp4')
-    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(maxSim)+'.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments1.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments_'+orientation+'.png -c:v libx264 -t 2 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/poor_moments_'+orientation+'.png -c:v libx264 -t 2 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(minSim)+'.png -c:v libx264 -t 3 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/poor_moments1.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(maxSim)+'.png -c:v libx264 -t 3 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments1.mp4')
     
+    os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/table.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/table.mp4')
+
     fClip = open('/openPose/output_'+args.postID+'/clipList.txt', "w")
     fClip.write('file \'/openPose/output_'+args.postID+'/output_main.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/score.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/best_moments.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/best_moments1.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments.mp4\'\n' )
-    fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'\n')
+    fClip.write('file \'/openPose/output_'+args.postID+'/table.mp4\'' )
     fClip.close()
 
 
@@ -805,18 +982,8 @@ if __name__ == '__main__':
     videoName='Video-'+args.postID+'.mp4' 
 
 
-#    bucket = storage.bucket()
-#    blob = bucket.blob('ComparisonVideos/'+videoName)
-#    outfile='/openPose/output_'+args.postID+'/output_full.mp4'
-#    with open(outfile, 'rb') as my_file:
-#      blob.upload_from_file(my_file)
-    conf=firestore.client().collection('confidential').document('doc1').get().to_dict()
-    ACCESS_KEY = conf['accessKeyId']
-    SECRET_KEY = conf['secretAccessKey']
-    session = Session(aws_access_key_id=ACCESS_KEY,
-              aws_secret_access_key=SECRET_KEY)
-    s3 = session.resource('s3')
-    buck = s3.Bucket('mooplaystorage')
+
+
     
     
     buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read'})
