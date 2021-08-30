@@ -961,6 +961,8 @@ if __name__ == '__main__':
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/combo_'+str(maxSim)+'.png -c:v libx264 -t 3 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments1.mp4')
     
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/table.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/table.mp4')
+    os.system('ffmpeg -loop 1 -i /openPose/templates/final_'+orientation+'.png -c:v libx264 -t 2 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/final.mp4')
+
 
     fClip = open('/openPose/output_'+args.postID+'/clipList.txt', "w")
     fClip.write('file \'/openPose/output_'+args.postID+'/output_main.mp4\'\n' )
@@ -969,7 +971,9 @@ if __name__ == '__main__':
     fClip.write('file \'/openPose/output_'+args.postID+'/best_moments1.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'\n')
+    fClip.write('file \'/openPose/output_'+args.postID+'/final.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/table.mp4\'' )
+    
     fClip.close()
 
 
@@ -986,7 +990,7 @@ if __name__ == '__main__':
 
     
     
-    buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read'})
+    buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read','ContentType':'video/mp4'})
     logger.info('Comparison video uploaded to AWS')
     com_url="https://mooplaystorage.s3.ap-south-1.amazonaws.com/"+'ComparisonVideos/'+videoName
     db1 = firestore.client()
