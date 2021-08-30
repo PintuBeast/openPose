@@ -971,8 +971,8 @@ if __name__ == '__main__':
     fClip.write('file \'/openPose/output_'+args.postID+'/best_moments1.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments.mp4\'\n' )
     fClip.write('file \'/openPose/output_'+args.postID+'/poor_moments1.mp4\'\n')
-    fClip.write('file \'/openPose/output_'+args.postID+'/final.mp4\'\n' )
-    fClip.write('file \'/openPose/output_'+args.postID+'/table.mp4\'' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/table.mp4\'\n' )
+    fClip.write('file \'/openPose/output_'+args.postID+'/final.mp4\'' )
     
     fClip.close()
 
