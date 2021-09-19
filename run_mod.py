@@ -880,7 +880,10 @@ if __name__ == '__main__':
         
         for xx in rankList:
             fileName='{}'.format(xx['rank'])+'.jpg'
-            buck.download_file( 'ProfilePics/ProfilePic-'+ xx['userID']+'.jpg',fileName)
+            try: 
+              buck.download_file( 'ProfilePics/ProfilePic-'+ xx['userID']+'.jpg',fileName)
+            except:
+               buck.download_file( 'appFiles/profileicon.png',fileName)
             s_img =cv2.resize(cv2.imread(fileName),(100,100))
 
             mask = np.zeros(s_img.shape, dtype=np.uint8)
