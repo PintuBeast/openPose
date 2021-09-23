@@ -30,6 +30,38 @@ if not firebase_admin._apps:
     'storageBucket': 'demoplayer-ecc96.appspot.com'
   })
 
+conf=firestore.client().collection('confidential').document('doc1').get().to_dict()
+ACCESS_KEY = conf['accessKeyId']
+SECRET_KEY = conf['secretAccessKey']
+client= boto3.client('logs', region_name='ap-south-1',aws_access_key_id=ACCESS_KEY,aws_secret_access_key=SECRET_KEY)
+
+LOG_GROUP='mooplayLog'
+LOG_STREAM='stream3'
+
+def logAWS(message):
+  response = client.describe_log_streams(
+    logGroupName=LOG_GROUP,
+    logStreamNamePrefix=LOG_STREAM
+  )
+  event_log = {
+    'logGroupName': LOG_GROUP,
+    'logStreamName': LOG_STREAM,
+    'logEvents': [
+        {
+            'timestamp': int(round(time.time() * 1000)),
+            'message': message
+        }
+    ],
+  }
+  
+
+  if 'uploadSequenceToken' in response['logStreams'][0]:
+    event_log.update({'sequenceToken': response['logStreams'][0] ['uploadSequenceToken']})
+
+  response = client.put_log_events(**event_log)
+
+
+
 ref = db.reference('progress')
 
 
@@ -63,6 +95,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
+    logAWS('Run_mod started with userID : '+args.userID +'  postID: '+args.postID)
+
     ref.child(args.postID).set({'object':{'progress':0}})
     w, h = model_wh(args.resize)
     if w == 0 or h == 0:
@@ -83,10 +117,10 @@ if __name__ == '__main__':
       print(error) 
     
    #video 1 split into frames
-
+    
     src = cv2.VideoCapture('/app/'+args.postID+'_input1.mp4')
     fps = src.get(cv2.CAP_PROP_FPS)
-
+    logAWS('Video 1 Frame Extraction started with userID : '+args.userID +'  postID: '+args.postID)
     frame_num = 0
     while(frame_num< int(src.get(cv2.CAP_PROP_FRAME_COUNT))):
       # Capture frame-by-frame
@@ -105,7 +139,7 @@ if __name__ == '__main__':
     src.release()
     cv2.destroyAllWindows()
 
-
+    logAWS('Video 1 frame extraction done with userID : '+args.userID +'  postID: '+args.postID)
 
    #video 2 split into frames
 
@@ -130,10 +164,12 @@ if __name__ == '__main__':
     src.release()
     cv2.destroyAllWindows()
 
-
+    logAWS('Video 2 frame extraction done with userID : '+args.userID +'  postID: '+args.postID)
+    
     f1Count = len(glob.glob1('/openPose/images_'+args.postID,"f1rame_*.png"))
     f2Count = len(glob.glob1('/openPose/images_'+args.postID,"f2rame_*.png"))
 
+    logAWS('Frame Count Video 1 :'+ str(f1Count)+',  Video 2:'+str(f2Count)+ ', userID :' +args.userID +  ' postID: '+args.postID)
     fCount = f1Count if f1Count < f2Count else f2Count 
     # processing first video
     data1 = {}
@@ -141,7 +177,8 @@ if __name__ == '__main__':
 
     data = {}
     data['frames'] = []
-
+    
+    logAWS('Video 1 pose extraction Starting with userID : '+args.userID +'  postID: '+args.postID)
     for i in range(0,fCount): 
       newTime=time.time()
       progress=80.0*float(i)/(2*fCount)
@@ -210,10 +247,12 @@ if __name__ == '__main__':
         'num': i,
         'array':data1}
       )
+    
 
     with open('/openPose/output_'+args.postID+'/data1.json', 'w') as outfile:
       json.dump(data, outfile)
 
+    logAWS('Video 1 pose extraction done with userID : '+args.userID +'  postID: '+args.postID)
 
     # processing second video
     data1 = {}
@@ -294,9 +333,10 @@ if __name__ == '__main__':
 
     #os.system('ffmpeg -i /openPose/output/f1rame_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p /openPose/output/out1.mp4')
     #os.system('ffmpeg -i /openPose/output/f2rame_%d.png -y -start_number 1 -vf scale=400:800 -c:v libx264 -pix_fmt yuv420p /openPose/output/out2.mp4')
-
+  
+    logAWS('Video 2 pose extraction done with userID : '+args.userID +'  postID: '+args.postID)
     
-      
+    
    
     
    
@@ -713,10 +753,13 @@ if __name__ == '__main__':
     maxSim=np.argmax(simArr)
     minSim=np.argmin(simArr) 
 
+    logAWS('Similarity Score calculated:'+str(netSim) +' with userID : '+args.userID +'  postID: '+args.postID)
     #print('Net Similarity:',netSim)
     db1 = firestore.client()
     result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
- 
+
+    logAWS('Score written to FIrebase : '+args.userID +'  postID: '+args.postID)
+
     font = cv2.FONT_HERSHEY_SIMPLEX
     top=0
     bottom=0
@@ -758,7 +801,8 @@ if __name__ == '__main__':
       x_score=350
       y_score=700
       orientation='horizontal'
-
+    
+    logAWS('Comparison Video creation starting; userID : '+args.userID +'  postID: '+args.postID) 
     for i in range(0,fCount):
       s_img =cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f1rame_'+str(i)+'.png'),(small_w,small_h))
       l_img = cv2.resize(cv2.imread('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png'),(big_w,big_h) )
@@ -770,6 +814,8 @@ if __name__ == '__main__':
       cv2.imwrite('/openPose/output_'+args.postID+'/combo_'+str(i)+'.png',l_img)
     os.system('ffmpeg -i /openPose/output_'+args.postID+'/combo_%d.png -y -start_number 1 -c:v libx264 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/output_main.mp4')
     
+    logAWS('Comparison Video creation ended; userID : '+args.userID +'  postID: '+args.postID)
+
     if netSim>=80:
       im = cv2.imread('/openPose/templates/3_star_'+orientation+'.png', 1)  
     elif netSim>=50 and netSim<80:
@@ -783,7 +829,10 @@ if __name__ == '__main__':
     else:
       cv2.putText(im, 'Score: Invalid Video', (10,300), font, 2, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imwrite('/openPose/output_'+args.postID+'/score.png', im)
-
+    
+    logAWS('Score and Stars Frame created : '+args.userID +'  postID: '+args.postID)
+    
+    logAWS('Rank List Creation starting : '+args.userID +'  postID: '+args.postID)
     conf=firestore.client().collection('confidential').document('doc1').get().to_dict()
     ACCESS_KEY = conf['accessKeyId']
     SECRET_KEY = conf['secretAccessKey']
@@ -956,6 +1005,9 @@ if __name__ == '__main__':
         cv2.imwrite('/openPose/output_'+args.postID+'/table.png',image)    
 
 
+    logAWS('Rank List Creation Ended : '+args.userID +'  postID: '+args.postID)
+    
+    logAWS('Best and Worst Moments Clip creation starting : '+args.userID +'  postID: '+args.postID)
 
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/score.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/score.mp4')
     os.system('ffmpeg -loop 1 -i /openPose/templates/best_moments_'+orientation+'.png -c:v libx264 -t 2 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/best_moments.mp4')
@@ -965,7 +1017,8 @@ if __name__ == '__main__':
     
     os.system('ffmpeg -loop 1 -i /openPose/output_'+args.postID+'/table.png -c:v libx264 -t 5 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/table.mp4')
     os.system('ffmpeg -loop 1 -i /openPose/templates/final_'+orientation+'.png -c:v libx264 -t 2 -pix_fmt yuv420p -y /openPose/output_'+args.postID+'/final.mp4')
-
+    
+    logAWS('Best and Worst Moments Clip creation Ended : '+args.userID +'  postID: '+args.postID)
 
     fClip = open('/openPose/output_'+args.postID+'/clipList.txt', "w")
     fClip.write('file \'/openPose/output_'+args.postID+'/output_main.mp4\'\n' )
@@ -979,6 +1032,7 @@ if __name__ == '__main__':
     
     fClip.close()
 
+    logAWS('Video append File created: '+args.userID +'  postID: '+args.postID)
 
     os.system('ffmpeg -f concat -safe 0 -i /openPose/output_'+args.postID+'/clipList.txt -c copy /openPose/output_'+args.postID+'/output_full1.mp4 -y')
 
@@ -988,19 +1042,21 @@ if __name__ == '__main__':
     #file upload and firestore update
     videoName='Video-'+args.postID+'.mp4' 
 
-
+    logAWS('Final Video Product created: '+args.userID +'  postID: '+args.postID)
 
 
     
     
     buck.upload_file('/openPose/output_'+args.postID+'/output_full.mp4','ComparisonVideos/'+videoName,ExtraArgs={'ACL':'public-read','ContentType':'video/mp4'})
     logger.info('Comparison video uploaded to AWS')
+    logAWS('Video uploaded to AWS '+args.userID +'  postID: '+args.postID)
     com_url="https://mooplaystorage.s3.ap-south-1.amazonaws.com/"+'ComparisonVideos/'+videoName
     db1 = firestore.client()
     result=db1.collection('copy_objects').document(args.postID).update({'score':netSim})
     result=db1.collection('copy_objects').document(args.postID).update({'comparison_video_url':com_url})
    # print(result)
     logger.info('Comparison URl updated in Firebase result  is %s' % str(result))
+    logAWS('Video URL updated in Firebase userID: '+args.userID +'  postID: '+args.postID)
     
     progress=100.0
     try:
@@ -1012,8 +1068,12 @@ if __name__ == '__main__':
       print("File write exception from run_mod: ",sys.exc_info()[0]) 
     
     try:
+      
       ref1=db.reference('serverStatus/'+str(gma())+'/runningJobs')
-      ref1.set(ref1.get()-1)
+      num=ref1.get()-1
+      ref1.set(num)
+      logAWS('Reducing running jobs on server to :'+str(num) +' userID: '+args.userID +'  postID: '+args.postID)
     except:
       print("Firebase write exception from run_mod: ",sys.exc_info()[0]) 
 
+    logAWS('Program Done userID: '+args.userID +'  postID: '+args.postID)
