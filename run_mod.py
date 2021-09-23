@@ -57,8 +57,12 @@ def logAWS(message):
 
   if 'uploadSequenceToken' in response['logStreams'][0]:
     event_log.update({'sequenceToken': response['logStreams'][0] ['uploadSequenceToken']})
-
-  response = client.put_log_events(**event_log)
+  
+  try: 
+    response = client.put_log_events(**event_log)
+  except OSError as error: 
+    print(error) 
+  
 
 
 
@@ -97,7 +101,20 @@ if __name__ == '__main__':
     
     logAWS('Run_mod started with userID : '+args.userID +'  postID: '+args.postID)
 
-    ref.child(args.postID).set({'object':{'progress':0}})
+    docs = firestore.client().collection(u'comparisonRequests').where(u'postID', u'==', args.postID).where(u'userID', u'==', args.userID).stream()
+
+    for doc in docs:
+      comparisonDocID=str(doc.id)
+
+    logAWS('Fetched comparison Doc with ID:'+comparisonDocID   +'userID : '+args.userID +'  postID: '+args.postID)
+
+    # ref.child(args.postID).set({'object':{'progress':0}})
+    try: 
+      firestore.client().collection(u'comparisonRequests').document(comparisonDocID).update({'progress':0})
+    except OSError as error: 
+      print(error) 
+    
+
     w, h = model_wh(args.resize)
     if w == 0 or h == 0:
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(432, 368))
@@ -185,13 +202,11 @@ if __name__ == '__main__':
       newProgress=progress  
       if newProgress-oldProgress>5.0:
         oldProgress=newProgress
-        try:
-          ref.child(args.postID).set({'object':{'progress':progress}})
-          print('progress is:',str(progress))
-        #  logger.info('progress is %s' % str(progress))
-          
-        except:
-          print("File write exception from run_mod: ",sys.exc_info()[0]) 
+        
+        try: 
+          firestore.client().collection(u'comparisonRequests').document(comparisonDocID).update({'progress':newProgress})
+        except OSError as error: 
+          print(error)  
             
 
       # estimate human poses from a single image !
@@ -267,12 +282,11 @@ if __name__ == '__main__':
       newProgress=progress  
       if newProgress-oldProgress>5.0:
         oldProgress=newProgress
-        try:
-          ref.child(args.postID).set({'object':{'progress':progress}})
-        #  print('progress is:',str(progress))
-          logger.info('progress is %s'% str(progress))
-        except:
-          print("File write exception from run_mod :",sys.exc_info()[0]) 
+
+        try: 
+          firestore.client().collection(u'comparisonRequests').document(comparisonDocID).update({'progress':newProgress})
+        except OSError as error: 
+          print(error)  
       
       # estimate human poses from a single image !
       image = common.read_imgfile('/openPose/images_'+args.postID+'/f2rame_'+str(i)+'.png', None, None)
@@ -732,10 +746,10 @@ if __name__ == '__main__':
       progress=90.0
       if newTime-oldTime>5.0:
         oldTime=newTime
-        try:
-          ref.child(args.postID).set({'object':{'progress':progress}})
-        except:
-          print("File write exception from run_mod") 
+        try: 
+          firestore.client().collection(u'comparisonRequests').document(comparisonDocID).update({'progress':progress})
+        except OSError as error: 
+          print(error)  
 
 
       for angle in theta: 
@@ -1059,21 +1073,19 @@ if __name__ == '__main__':
     logAWS('Video URL updated in Firebase userID: '+args.userID +'  postID: '+args.postID)
     
     progress=100.0
-    try:
-      ref.child(args.postID).set({'object':{'progress':progress}})
-      logger.info('progress is %s' % str(progress))  
-     # os.system('rm -r /openPose/images_'+args.postID)
-     # os.system('rm -r /openPose/output_'+args.postID)
-    except:
-      print("File write exception from run_mod: ",sys.exc_info()[0]) 
-    
-    try:
+
+    try: 
+      firestore.client().collection(u'comparisonRequests').document(comparisonDocID).update({'progress':progress,'status':'success'})
+    except OSError as error: 
+      print(error)  
+
+    # try:
       
-      ref1=db.reference('serverStatus/'+str(gma())+'/runningJobs')
-      num=ref1.get()-1
-      ref1.set(num)
-      logAWS('Reducing running jobs on server to :'+str(num) +' userID: '+args.userID +'  postID: '+args.postID)
-    except:
-      print("Firebase write exception from run_mod: ",sys.exc_info()[0]) 
+    #   ref1=db.reference('serverStatus/'+str(gma())+'/runningJobs')
+    #   num=ref1.get()-1
+    #   ref1.set(num)
+    #   logAWS('Reducing running jobs on server to :'+str(num) +' userID: '+args.userID +'  postID: '+args.postID)
+    # except:
+    #   print("Firebase write exception from run_mod: ",sys.exc_info()[0]) 
 
     logAWS('Program Done userID: '+args.userID +'  postID: '+args.postID)
